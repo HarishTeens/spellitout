@@ -7,8 +7,8 @@ channels = 1
 sample_rate = 16000
 chunk_size = 1024
 
-server_address = "134.215.109.213"
-server_port = 44052
+server_address = "81.166.173.12"
+server_port = 12139
 
 
 audio = pyaudio.PyAudio()
@@ -28,6 +28,11 @@ try:
     while True:
         audio_data = stream.read(chunk_size)
         client_socket.sendall(audio_data)
+
+        server_response = client_socket.recv(1024)
+        print("Server response:", server_response.decode('utf-8'))
+
+
 except KeyboardInterrupt:
     print("Recording and streaming stopped.")
 

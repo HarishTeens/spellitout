@@ -14,16 +14,20 @@ stream = audio.open(format=pyaudio.paInt16,
                     output=True,
                     frames_per_buffer=CHUNK_SIZE)
 
+
 def init_whisper_server():
-    server_address = "210.203.214.230"
-    server_port = 55991
-    
+    server_address = "81.166.173.12"
+    server_port = 12139
+
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((server_address, server_port))
-    
+
     return client_socket
 
+
 whisper_server = init_whisper_server()
+
+
 async def audio_stream(websocket, path):
     try:
         while True:
@@ -33,7 +37,7 @@ async def audio_stream(websocket, path):
                 break  # Handle disconnection or end of the audio stream
             # Process the audio_data
             whisper_server.sendall(audio_data)
-            
+
     except websockets.exceptions.ConnectionClosedError:
         print("Client disconnected")
 
@@ -43,5 +47,6 @@ def main():
 
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_forever()
-    
+
+
 main()

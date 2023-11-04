@@ -7,8 +7,8 @@ channels = 1
 sample_rate = 16000
 chunk_size = 1024
 
-server_address = "171.226.158.61"
-server_port = 54279
+server_address = "211.21.106.84"
+server_port = 58863
 
 
 audio = pyaudio.PyAudio()

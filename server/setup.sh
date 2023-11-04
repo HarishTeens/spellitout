@@ -1,5 +1,7 @@
 #!/bin/bash
 
+apt-get install lsof
+
 # Install librosa
 pip install librosa
 
