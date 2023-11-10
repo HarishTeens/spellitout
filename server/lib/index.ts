@@ -5,18 +5,34 @@ const app = express()
 require('dotenv').config()
 
 
+app.use(cors({
+    origin: '*',
+    optionsSuccessStatus: 200
+}))
+import socketServer from './service/socketServer'
+import { Server } from 'socket.io'
+import http from 'http'
+const server = http.createServer(app)
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+});
+
+io.on("connection", socketServer);
+
 import apis from './config/routes'
 import middlewares from './middlewares';
 import cache from 'memory-cache';
 
 app.use(bodyParser.json());
-app.use(cors())
 
 app.use(apis)
 app.use(middlewares.allErrorHandler)
 
-app.listen(3000, () => {
+server.listen(4000, () => {
     cache.put('isMeetingRunning', false);
     cache.put('attendeesLangMap', {});
-    console.log('Server is running on port 3000')
+    console.log('Server is running on port 4000')
 })
