@@ -1,17 +1,15 @@
 import './App.css';
 import { io } from "socket.io-client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import api from "./api";
 
 function App() {
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const socket = io(process.env.REACT_APP_SERVER_URL);
-    console.log(process.env.REACT_APP_SERVER_URL)
-    socket.on("connect", () => {
-      console.log("connected");
+    api.getStatus().then((data) => {
+      console.log(data);
+      setLoading(false);
     });
-    return () => {
-      socket.disconnect();
-    };
   }, []);
 
   return (
