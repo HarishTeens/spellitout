@@ -18,8 +18,7 @@ export const StartPage = () => {
         password: password,
       })
       .then((response) => {
-        console.log("REDIRECTING TO VIEW");
-        router.push("/view");
+        router.push("/join");
       });
   };
 

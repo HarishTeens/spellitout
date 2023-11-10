@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +14,7 @@ import { Button } from "@/components/ui/button";
 
 const JoinPage = () => {
   const base_url = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
+  const router = useRouter();
 
   const [inputLang, setInputLang] = useState("");
   const [outputLang, setOutputLang] = useState("");
@@ -20,6 +22,8 @@ const JoinPage = () => {
   const handleSubmit = () => {
     localStorage.setItem("inputLang", inputLang);
     localStorage.setItem("outputLang", outputLang);
+
+    router.push("/view");
   };
 
   return (
