@@ -43,6 +43,7 @@ export default function (socket) {
     socket.on("disconnect", () => {
         if (isMeetingRunning === false)
             [deepgramEN, deepgramES].forEach((deepgram) => {
+                if (!deepgram) return;
                 deepgram.finish();
                 deepgram.removeAllListeners();
                 deepgram = null;

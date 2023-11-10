@@ -51,6 +51,7 @@ class Controller {
                 success: false,
                 message: "Meeting not running"
             })
+            return;
         }
         const { inputLang, outputLang, socketClientId } = req.body;
         const attendeesLangMap = cache.get('attendeesLangMap') as LangMap;
