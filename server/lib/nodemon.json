@@ -1,12 +1,6 @@
 {
-    "ignore": [
-        "**/*.test.ts",
-        "**/*.spec.ts",
-        "node_modules"
-    ],
-    "watch": [
-        "."
-    ],
-    "exec": "yarn start",
-    "ext": "ts"
+  "ignore": ["**/*.test.ts", "**/*.spec.ts", "node_modules"],
+  "watch": ["."],
+  "exec": "pnpm start",
+  "ext": "ts"
 }
