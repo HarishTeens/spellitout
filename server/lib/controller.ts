@@ -12,6 +12,15 @@ class Controller {
     }
 
     startMeeting(req, res) {
+        const isMeetingRunning = cache.get('isMeetingRunning');
+        if (isMeetingRunning) {
+            res.status(400).json({
+                isMeetingRunning: true,
+                message: "Meeting already running"
+            })
+            return;
+        }
+
         cache.put('isMeetingRunning', true);
         res.json({
             isMeetingRunning: true,
@@ -21,7 +30,13 @@ class Controller {
     }
 
     stopMeeting(req, res) {
-
+        const isMeetingRunning = cache.get('isMeetingRunning');
+        if (!isMeetingRunning) {
+            res.status(400).json({
+                isMeetingRunning: false,
+                message: "Meeting not running"
+            })
+        }
         cache.put('isMeetingRunning', false);
         res.json({
             isMeetingRunning: false,
@@ -30,6 +45,13 @@ class Controller {
     }
 
     joinMeeting(req, res) {
+        const isMeetingRunning = cache.get('isMeetingRunning');
+        if (!isMeetingRunning) {
+            res.status(400).json({
+                success: false,
+                message: "Meeting not running"
+            })
+        }
         const { inputLang, outputLang, socketClientId } = req.body;
         const attendeesLangMap = cache.get('attendeesLangMap') as LangMap;
         attendeesLangMap[socketClientId] = {

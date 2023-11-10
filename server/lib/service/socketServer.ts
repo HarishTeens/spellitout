@@ -1,7 +1,52 @@
+import cache from 'memory-cache';
+import DG from "./deepgram";
+
+function getClientDeepgram(socket, dgMap) {
+    const socketId = socket.id;
+    const attendeesLangMap = cache.get("attendeesLangMap");
+    const attendee = attendeesLangMap[socketId];
+
+    const deepgram = dgMap[attendee.in];
+    return [deepgram, attendee];
+}
+
 export default function (socket) {
     console.log("socket: client connected");
+
+    const isMeetingRunning = cache.get("isMeetingRunning");
+    let deepgramEN, deepgramES;
+    if (isMeetingRunning) {
+        deepgramEN = DG.setupDeepgram(socket, "en", "es");
+        deepgramES = DG.setupDeepgram(socket, "es", "en");
+    }
+
+    socket.emit("client-id", socket.id);
+    socket.on("packet-sent", (data) => {
+        console.log("socket: client data received");
+        let [deepgram, attendee] = getClientDeepgram(socket, { en: deepgramEN, es: deepgramES });
+
+        if (deepgram.getReadyState() === 1 /* OPEN */) {
+            console.log("socket: data sent to deepgram");
+            deepgram.send(data);
+        } else if (deepgram.getReadyState() >= 2 /* 2 = CLOSING, 3 = CLOSED */) {
+            console.log("socket: data couldn't be sent to deepgram");
+            console.log("socket: retrying connection to deepgram");
+            /* Attempt to reopen the Deepgram connection */
+            deepgram.finish();
+            deepgram.removeAllListeners();
+            deepgram = DG.setupDeepgram(socket, attendee.in, attendee.out);
+        } else {
+            console.log("socket: data couldn't be sent to deepgram");
+        }
+    });
+
     socket.on("disconnect", () => {
-        console.log("socket: client disconnected");
+        if (isMeetingRunning === false)
+            [deepgramEN, deepgramES].forEach((deepgram) => {
+                deepgram.finish();
+                deepgram.removeAllListeners();
+                deepgram = null;
+            });
     });
 }
 
