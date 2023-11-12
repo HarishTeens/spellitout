@@ -42,6 +42,7 @@ const setupDeepgram = (socket, src, target) => {
 
         deepgram.addListener("transcriptReceived", async (packet) => {
             console.log("deepgram: packet received");
+            console.log(packet, null, 4);
             const data = JSON.parse(packet);
             const { type } = data;
             switch (type) {

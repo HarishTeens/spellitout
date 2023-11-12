@@ -24,6 +24,7 @@ export default function (socket) {
     socket.on("packet-sent", (data) => {
         console.log("socket: client data received");
         let [deepgram, attendee] = getClientDeepgram(socket, { en: deepgramEN, es: deepgramES });
+        console.log("deepgram ready state ", deepgram.getReadyState())
 
         if (deepgram.getReadyState() === 1 /* OPEN */) {
             console.log("socket: data sent to deepgram");
