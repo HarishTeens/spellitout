@@ -1,3 +1,4 @@
+import { io } from '.';
 import { LangMap } from './config/types';
 import cache from 'memory-cache';
 
@@ -36,8 +37,10 @@ class Controller {
                 isMeetingRunning: false,
                 message: "Meeting not running"
             })
+            return;
         }
         cache.put('isMeetingRunning', false);
+        io.close();
         res.json({
             isMeetingRunning: false,
             message: "Meeting stopped"
