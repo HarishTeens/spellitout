@@ -2,14 +2,13 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import axios from "axios";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { Button } from "@/components/ui/button";
 
 const JoinPage = () => {
@@ -27,42 +26,40 @@ const JoinPage = () => {
   };
 
   return (
-    <main className=" bg-white">
+    <main className=" h-screen bg-slate-800 text-white flex items-center justify-center flex-col gap-y-4">
       <div className="text-slate-800">Sexy Harish</div>
-      <div className="flex items-center justify-evenly gap-2 ">
-        <DropdownMenu>
-          <DropdownMenuTrigger className="">
-            Select Input Language
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Language</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => setInputLang("en")}>
+      <div className="flex items-center justify-evenly gap-2 flex-col">
+        <Select>
+          <SelectTrigger className="w-[500px] text-black">
+            <SelectValue placeholder="Select Input Language" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="en" onClick={() => setInputLang("en")}>
               English
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setInputLang("es")}>
+            </SelectItem>
+            <SelectItem value="es" onClick={() => setInputLang("es")}>
               Spanish
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </SelectItem>
+          </SelectContent>
+        </Select>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger className="">
-            Select Output Language
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Language</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => setOutputLang("en")}>
+        <Select>
+          <SelectTrigger className="w-[500px] text-black">
+            <SelectValue placeholder="Select Output Language" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="en" onClick={() => setOutputLang("en")}>
               English
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setOutputLang("es")}>
+            </SelectItem>
+            <SelectItem value="es" onClick={() => setOutputLang("es")}>
               Spanish
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </SelectItem>
+          </SelectContent>
+        </Select>
 
-        <Button onClick={handleSubmit}>Submit</Button>
+        <Button className="w-[500px]" onClick={handleSubmit}>
+          Submit
+        </Button>
       </div>
     </main>
   );
