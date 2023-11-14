@@ -12,7 +12,6 @@ import {
 import { Button } from "@/components/ui/button";
 
 const JoinPage = () => {
-  const base_url = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
   const router = useRouter();
 
   const [inputLang, setInputLang] = useState("");

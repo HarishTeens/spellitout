@@ -11,7 +11,7 @@ export const ViewPage = () => {
   const [inpLanguage, setInpLanguage] = useState<string>("");
   const [outLanguage, setOutLanguage] = useState<string>("");
 
-  const closeMicrophone = async () => {
+  const stopMeeting = async () => {
     if (!microphoneRef.current) return;
     console.log(microphoneRef.current);
     microphoneRef.current?.stop();
@@ -20,7 +20,7 @@ export const ViewPage = () => {
     await api.stopMeeting();
   };
 
-  useEffect(() => {
+  const startMeeting = () => {
     sock.current = connectSocket(microphoneRef);
     if (!sock.current) return;
     sock.current.on("transcript", (transcript: any) => {
@@ -40,15 +40,16 @@ export const ViewPage = () => {
         return lang + " " + contents[1];
       });
     });
-  }, []);
+  }
   return (
     <>
       <div>ViewPage</div>
+      <Button onClick={startMeeting}>Start</Button>
+      <Button variant={"destructive"} onClick={stopMeeting}>Stop</Button>
       <div className="flex items-center gap-4 flex-col">
         <div className="text-lg max-w-xl">{inpLanguage}</div>
         <div className="text-lg max-w-xl">{outLanguage}</div>
       </div>
-      <Button className="danger" onClick={closeMicrophone}>Stop</Button>
     </>
   );
 };
