@@ -5,23 +5,40 @@ import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 export const StartPage = () => {
   const base_url = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
   const router = useRouter();
+  const { toast } = useToast();
 
   const [password, setPassword] = useState("");
 
-  localStorage.setItem("password", password);
-
-  const handleSubmit = () => {
-    axios
-      .post(`${base_url}/start`, {
+  const handleSubmit = async () => {
+    try {
+      localStorage.setItem("password", password);
+      const resp = await axios.post(`${base_url}/start`, {
         password: password,
-      })
-      .then((response) => {
-        router.push("/join");
       });
+      console.log(resp);
+
+      router.push("/join");
+    } catch (err: any) {
+      console.log(err);
+      const outp = err?.response?.data?.message;
+      if (outp == "Meeting already running") {
+        router.push("/join");
+        return;
+      }
+      toast({
+        title: "Uh oh! Something went wrong.",
+
+        description: outp ?? "Enter correct password",
+        variant: "destructive",
+      });
+    } finally {
+      setPassword("");
+    }
   };
 
   const handleChange = (event: any) => {
@@ -29,11 +46,25 @@ export const StartPage = () => {
   };
 
   return (
-    <div className="flex w-full max-w-sm items-center space-x-2 bg-slate-800">
-      <Input type="text" placeholder="Password" onChange={handleChange} />
-      <Button type="submit" onClick={handleSubmit}>
-        Subscribe
-      </Button>
+    <div className="h-screen bg-slate-800 text-white flex items-center justify-center flex-col gap-y-4 ">
+      <h3 className="text-xl">Please Enter your password below</h3>
+      <Input
+        type="text"
+        placeholder="Harish Rocks"
+        onChange={handleChange}
+        value={password}
+        className="max-w-xl border-4 border-red-800 text-black"
+      />
+      <div className="w-[36rem]">
+        {" "}
+        <Button
+          type="submit"
+          onClick={handleSubmit}
+          className="w-full hover:bg-slate-700"
+        >
+          Submit
+        </Button>
+      </div>
     </div>
   );
 };

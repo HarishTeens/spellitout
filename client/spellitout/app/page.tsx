@@ -1,33 +1,44 @@
 "use client";
 
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Home() {
   const base_url = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
   const router = useRouter();
+  const { toast } = useToast();
 
-  useEffect(() => {
-    axios
-      .get(`${base_url}/status`)
-      .then((response) => {
-        const { isMeetingRunning } = response.data;
-
-        if (isMeetingRunning) {
-          router.push("/join");
-        } else {
-          router.push("/start");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
+  const handleClick = async () => {
+    try {
+      const resp = await axios.get(`${base_url}/status`);
+      const { isMeetingRunning } = resp.data;
+      if (isMeetingRunning) {
+        router.push("/join");
+      } else {
+        router.push("/start");
+      }
+    } catch (err: any) {
+      console.log("Error in console");
+      console.log(err);
+      toast({
+        title: "Uh oh! Something went wrong.",
+        description: err?.message,
+        variant: "destructive",
       });
-  }, [base_url, router]);
+    }
+  };
 
   return (
-    <div className="h-screen bg-slate-800 text-white w-full flex items-center justify-center">
-      Hi This is the First Meeting Page
+    <div className="h-screen bg-slate-800 text-white w-full flex items-center justify-center flex-col gap-y-4 ">
+      Hi This is the First Landing Page
+      <Button
+        className=" text-white py-2 px-4 rounded-md text-lg hover:bg-gray-700"
+        onClick={handleClick}
+      >
+        Get Started
+      </Button>
     </div>
   );
 }
