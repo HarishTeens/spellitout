@@ -43,7 +43,7 @@ async function start(socket: any) {
 }
 
 function connectSocket(microphoneRef: any) {
-  const url = process.env.NEXT_PUBLIC_SERVER_BASE_URL || "";
+  const url = process.env.NEXT_PUBLIC_WS_URL || "";
   const socket = io(url, { transports: ["websocket"] });
   let microphone;
 
