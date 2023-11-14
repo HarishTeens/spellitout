@@ -32,7 +32,7 @@ export default function Home() {
 
   return (
     <div className="h-screen bg-slate-800 text-white w-full flex items-center justify-center flex-col gap-y-4 ">
-      Hi This is the First Landing Page
+      <div className="text-2xl">SpellitOut</div>
       <Button
         className=" text-white py-2 px-4 rounded-md text-lg hover:bg-gray-700"
         onClick={handleClick}

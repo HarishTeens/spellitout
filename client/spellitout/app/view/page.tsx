@@ -5,7 +5,7 @@ import connectSocket from "@/lib/socket";
 import { Button } from "@/components/ui/button";
 import api from "@/lib/api";
 
-export const ViewPage = () => {
+const ViewPage = () => {
   const sock = useRef<any>(null);
   const microphoneRef = useRef<MediaRecorder | null>(null);
   const [inpLanguage, setInpLanguage] = useState<string>("");
@@ -13,7 +13,7 @@ export const ViewPage = () => {
 
   useEffect(() => {
     startMeeting();
-  }, [])
+  }, []);
   const stopMeeting = async () => {
     if (!microphoneRef.current) return;
     console.log(microphoneRef.current);
@@ -24,8 +24,6 @@ export const ViewPage = () => {
 
     await api.stopMeeting();
   };
-
-
 
   const startMeeting = () => {
     sock.current = connectSocket(microphoneRef);
@@ -52,7 +50,9 @@ export const ViewPage = () => {
     <>
       <div>ViewPage</div>
       {/* <Button onClick={startMeeting}>Start</Button> */}
-      <Button variant={"destructive"} onClick={stopMeeting}>Stop</Button>
+      <Button variant={"destructive"} onClick={stopMeeting}>
+        Stop
+      </Button>
       <div className="flex items-center gap-4 flex-col">
         <div className="text-lg max-w-xl">{inpLanguage}</div>
         <div className="text-lg max-w-xl">{outLanguage}</div>
