@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 
-export const StartPage = () => {
+const StartPage = () => {
   const base_url = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
   const router = useRouter();
   const { toast } = useToast();
@@ -50,7 +50,7 @@ export const StartPage = () => {
       <h3 className="text-xl">Please Enter your password below</h3>
       <Input
         type="text"
-        placeholder="Harish Rocks"
+        placeholder="John Doe"
         onChange={handleChange}
         value={password}
         className="max-w-xl border-4 border-red-800 text-black"
