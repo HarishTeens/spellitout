@@ -16,12 +16,12 @@ export const StartPage = () => {
 
   const handleSubmit = async () => {
     try {
+      localStorage.clear();
       localStorage.setItem("password", password);
       const resp = await axios.post(`${base_url}/start`, {
         password: password,
       });
       console.log(resp);
-
       router.push("/join");
     } catch (err: any) {
       console.log(err);

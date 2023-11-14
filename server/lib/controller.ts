@@ -40,7 +40,6 @@ class Controller {
             return;
         }
         cache.put('isMeetingRunning', false);
-        io.close();
         res.json({
             isMeetingRunning: false,
             message: "Meeting stopped"

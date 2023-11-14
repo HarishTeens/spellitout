@@ -11,6 +11,9 @@ export const ViewPage = () => {
   const [inpLanguage, setInpLanguage] = useState<string>("");
   const [outLanguage, setOutLanguage] = useState<string>("");
 
+  useEffect(() => {
+    startMeeting();
+  }, [])
   const stopMeeting = async () => {
     if (!microphoneRef.current) return;
     console.log(microphoneRef.current);
@@ -19,6 +22,8 @@ export const ViewPage = () => {
 
     await api.stopMeeting();
   };
+
+
 
   const startMeeting = () => {
     sock.current = connectSocket(microphoneRef);
@@ -44,7 +49,7 @@ export const ViewPage = () => {
   return (
     <>
       <div>ViewPage</div>
-      <Button onClick={startMeeting}>Start</Button>
+      {/* <Button onClick={startMeeting}>Start</Button> */}
       <Button variant={"destructive"} onClick={stopMeeting}>Stop</Button>
       <div className="flex items-center gap-4 flex-col">
         <div className="text-lg max-w-xl">{inpLanguage}</div>
