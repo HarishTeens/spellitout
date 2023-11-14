@@ -12,7 +12,7 @@ const ViewPage = () => {
   const [outLanguage, setOutLanguage] = useState<string>("");
 
   useEffect(() => {
-    startMeeting();
+    setTimeout(startMeeting, 1000);
   }, []);
   const stopMeeting = async () => {
     if (!microphoneRef.current) return;
