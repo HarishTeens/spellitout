@@ -1,6 +1,7 @@
 import io from "socket.io-client";
 import api from "@/lib/api";
 
+let isStopped = false;
 async function getMicrophone() {
   const userMedia = await navigator.mediaDevices.getUserMedia({
     audio: true,
@@ -18,9 +19,8 @@ async function openMicrophone(microphone: any, socket: any) {
 
   microphone.onstop = () => {
     console.log("client: microphone closed");
-    socket.emit("packet-sent", "end");
-    socket.emit("disconnect");
-    socket.close();
+    socket.disconnect();
+    socket.emit('end');
   };
 
   microphone.ondataavailable = (e: any) => {
@@ -45,6 +45,7 @@ async function start(socket: any) {
 function connectSocket(microphoneRef: any) {
   const url = process.env.NEXT_PUBLIC_SERVER_BASE_URL || "";
   const socket = io(url, { transports: ["websocket"] });
+  let microphone;
 
   socket.on("connect", async () => {
     console.log("client: connected to websocket");
@@ -55,8 +56,14 @@ function connectSocket(microphoneRef: any) {
     const inputLang = localStorage.getItem("inputLang") || "en";
     const outputLang = localStorage.getItem("outputLang") || "en";
     await api.joinMeeting({ inp: inputLang, out: outputLang, socketId: id });
-    microphoneRef.current = await start(socket);
+    microphone = await start(socket);
+    microphoneRef.current = microphone;
   });
+
+  socket.on("disconnect", () => {
+    console.log("client: disconnected from websocket");
+    microphoneRef.current?.stop();
+  })
 
   return socket;
 }
