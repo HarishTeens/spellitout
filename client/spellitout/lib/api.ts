@@ -8,4 +8,9 @@ const joinMeeting = async (params: any) => {
     return resp.data;
 }
 
-export default { joinMeeting }
+const stopMeeting = async () => {
+    const resp = await axios.post(`${base_url}/stop`, { password: localStorage.getItem("password") });
+    return resp.data;
+}
+
+export default { joinMeeting, stopMeeting }

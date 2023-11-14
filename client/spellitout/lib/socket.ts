@@ -14,22 +14,20 @@ async function openMicrophone(microphone: any, socket: any) {
 
   microphone.onstart = () => {
     console.log("client: microphone opened");
-    document.body.classList.add("recording");
   };
 
   microphone.onstop = () => {
     console.log("client: microphone closed");
-    document.body.classList.remove("recording");
+    socket.emit("packet-sent", "end");
+    socket.emit("disconnect");
+    socket.close();
   };
 
   microphone.ondataavailable = (e: any) => {
+    if (microphone.state === "inactive") return;
     console.log("client: sent data to websocket");
     socket.emit("packet-sent", e.data);
   };
-}
-
-async function closeMicrophone(microphone: any) {
-  microphone.stop();
 }
 
 async function start(socket: any) {
@@ -38,19 +36,13 @@ async function start(socket: any) {
 
   console.log("client: waiting to open microphone");
 
-  // listenButton.addEventListener("click", async () => {
-  if (!microphone) {
-    // open and close the microphone
-    microphone = await getMicrophone();
-    await openMicrophone(microphone, socket);
-  } else {
-    await closeMicrophone(microphone);
-    microphone = undefined;
-  }
-  // });
+  microphone = await getMicrophone();
+  await openMicrophone(microphone, socket);
+
+  return microphone;
 }
 
-function connectSocket() {
+function connectSocket(microphoneRef: any) {
   const url = process.env.NEXT_PUBLIC_SERVER_BASE_URL || "";
   const socket = io(url, { transports: ["websocket"] });
 
@@ -63,9 +55,8 @@ function connectSocket() {
     const inputLang = localStorage.getItem("inputLang") || "en";
     const outputLang = localStorage.getItem("outputLang") || "en";
     await api.joinMeeting({ inp: inputLang, out: outputLang, socketId: id });
-    await start(socket);
+    microphoneRef.current = await start(socket);
   });
-
 
   return socket;
 }

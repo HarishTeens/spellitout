@@ -12,6 +12,8 @@ export const StartPage = () => {
 
   const [password, setPassword] = useState("");
 
+  localStorage.setItem("password", password);
+
   const handleSubmit = () => {
     axios
       .post(`${base_url}/start`, {

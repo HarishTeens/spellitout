@@ -2,14 +2,26 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import connectSocket from "@/lib/socket";
+import { Button } from "@/components/ui/button";
+import api from "@/lib/api";
 
 export const ViewPage = () => {
   const sock = useRef<any>(null);
+  const microphoneRef = useRef<MediaRecorder | null>(null);
   const [inpLanguage, setInpLanguage] = useState<string>("");
   const [outLanguage, setOutLanguage] = useState<string>("");
 
+  const closeMicrophone = async () => {
+    if (!microphoneRef.current) return;
+    console.log(microphoneRef.current);
+    microphoneRef.current?.stop();
+    sock.current.disconnect();
+
+    await api.stopMeeting();
+  };
+
   useEffect(() => {
-    sock.current = connectSocket();
+    sock.current = connectSocket(microphoneRef);
     if (!sock.current) return;
     sock.current.on("transcript", (transcript: any) => {
       // captions.innerHTML = transcript ? `<span>${transcript}</span>` : "";
@@ -36,6 +48,7 @@ export const ViewPage = () => {
         <div className="text-lg max-w-xl">{inpLanguage}</div>
         <div className="text-lg max-w-xl">{outLanguage}</div>
       </div>
+      <Button className="danger" onClick={closeMicrophone}>Stop</Button>
     </>
   );
 };
