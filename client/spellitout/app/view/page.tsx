@@ -18,7 +18,9 @@ export const ViewPage = () => {
     if (!microphoneRef.current) return;
     console.log(microphoneRef.current);
     microphoneRef.current?.stop();
-    sock.current.disconnect();
+    if (sock.current) {
+      sock.current.close();
+    }
 
     await api.stopMeeting();
   };
@@ -45,7 +47,7 @@ export const ViewPage = () => {
         return lang + " " + contents[1];
       });
     });
-  }
+  };
   return (
     <>
       <div>ViewPage</div>
