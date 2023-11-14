@@ -1,5 +1,6 @@
 import cache from "memory-cache";
 import DG from "./deepgram";
+import { io } from "..";
 
 function getClientDeepgram(socket, dgMap) {
   const socketId = socket.id;
@@ -16,16 +17,23 @@ export default function (socket) {
   console.log("socket: client connected");
 
   const isMeetingRunning = cache.get("isMeetingRunning");
+  const isSDKsLoaded = cache.get("isSDKsLoaded");
+
+  if (!isMeetingRunning) {
+    io.disconnectSockets();
+  }
+
   let deepgramEN, deepgramES;
-  if (isMeetingRunning) {
-    deepgramEN = DG.setupDeepgram(socket, "en", "es");
+  if (isMeetingRunning && !isSDKsLoaded) {
     deepgramES = DG.setupDeepgram(socket, "es", "en");
+    deepgramEN = DG.setupDeepgram(socket, "en", "es");
+    cache.put("isSDKsLoaded", true);
   }
 
   socket.emit("client-id", socket.id);
   socket.on("packet-sent", (data) => {
-    console.log("socket: client data received");
-    console.log(socket.id);
+    // console.log("socket: client data received");
+    // console.log(socket.id);
 
     let [deepgram, attendee] = getClientDeepgram(socket, {
       en: deepgramEN,
@@ -35,17 +43,26 @@ export default function (socket) {
     if (!deepgram || !attendee) return;
 
     if (deepgram.getReadyState() === 1 /* OPEN */) {
-      console.log("socket: data sent to deepgram");
+      // console.log("socket: data sent to deepgram");
       deepgram.send(data);
     } else if (deepgram.getReadyState() >= 2 /* 2 = CLOSING, 3 = CLOSED */) {
-      console.log("socket: data couldn't be sent to deepgram");
-      console.log("socket: retrying connection to deepgram");
+      // console.log("socket: data couldn't be sent to deepgram");
       /* Attempt to reopen the Deepgram connection */
       deepgram.finish();
       deepgram.removeAllListeners();
-      deepgram = DG.setupDeepgram(socket, attendee.in, attendee.out);
+      if (deepgramES.getReadyState()) {
+        console.log("socket: retrying connection to deepgram ES");
+        deepgramES = DG.setupDeepgram(socket, "es", "en");
+        deepgramES.getReadyState()
+      }
+      if (deepgramEN.getReadyState()) {
+        console.log("socket: retrying connection to deepgram EN");
+        deepgramEN = DG.setupDeepgram(socket, "en", "es");
+        deepgramEN.getReadyState();
+      }
+      // deepgram = DG.setupDeepgram(socket, attendee.in, attendee.out);
     } else {
-      console.log("socket: data couldn't be sent to deepgram");
+      console.log("socket: data couldn't be sent to deepgram " + attendee.in);
     }
   });
 

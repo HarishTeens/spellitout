@@ -1,7 +1,6 @@
 import io from "socket.io-client";
 import api from "@/lib/api";
 
-let isStopped = false;
 async function getMicrophone() {
   const userMedia = await navigator.mediaDevices.getUserMedia({
     audio: true,

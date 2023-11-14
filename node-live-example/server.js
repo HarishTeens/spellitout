@@ -51,12 +51,6 @@ async function translateText(text) {
 
 const setupDeepgram = (socket) => {
   const deepgram = client.transcription.live({
-    language: "hi",
-    punctuate: true,
-    smart_format: true,
-    model: "general",
-    tier: "enhanced",
-    diarize: true,
     punctuate: true
   });
 

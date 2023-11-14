@@ -15,6 +15,7 @@ const setupDeepgram = (socket, src, target) => {
         });
     } else {
         deepgram = client.transcription.live({
+            language: "en",
             punctuate: true
         });
     }
@@ -22,15 +23,15 @@ const setupDeepgram = (socket, src, target) => {
 
     if (keepAlive) clearInterval(keepAlive);
     keepAlive = setInterval(() => {
-        console.log("deepgram: keepalive");
+        // console.log("deepgram: keepalive");
         deepgram.keepAlive();
     }, 10 * 1000);
 
     deepgram.addListener("open", async () => {
-        console.log("deepgram: connected");
+        console.log("deepgram: connected ", src, target);
 
         deepgram.addListener("close", async () => {
-            console.log("deepgram: disconnected");
+            console.log("deepgram: disconnected " + src);
             clearInterval(keepAlive);
             deepgram.finish();
         });
@@ -41,14 +42,14 @@ const setupDeepgram = (socket, src, target) => {
         });
 
         deepgram.addListener("transcriptReceived", async (packet) => {
-            console.log("deepgram: packet received");
+            // console.log("deepgram: packet received");
             const data = JSON.parse(packet);
             const { type } = data;
             switch (type) {
                 case "Results":
-                    console.log("deepgram: transcript received");
+                    // console.log("deepgram: transcript received");
                     const transcript = data.channel.alternatives[0].transcript ?? "";
-                    console.log("socket: transcript sent to client");
+                    // console.log("socket: transcript sent to client");
                     socket.emit("transcript", {
                         [src]: transcript,
                         [target]: await translateText(transcript, src, target)

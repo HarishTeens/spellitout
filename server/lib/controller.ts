@@ -40,6 +40,12 @@ class Controller {
             return;
         }
         cache.put('isMeetingRunning', false);
+        const attendeesLangMap = cache.get('attendeesLangMap') as LangMap;
+        io.disconnectSockets();
+        Object.keys(attendeesLangMap).forEach((key) => {
+            delete attendeesLangMap[key];
+        })
+        cache.put('attendeesLangMap', attendeesLangMap);
         res.json({
             isMeetingRunning: false,
             message: "Meeting stopped"
