@@ -15,7 +15,9 @@ export const ViewPage = () => {
     if (!microphoneRef.current) return;
     console.log(microphoneRef.current);
     microphoneRef.current?.stop();
-    sock.current.disconnect();
+    if (sock.current) {
+      sock.current.close();
+    }
 
     await api.stopMeeting();
   };
@@ -48,7 +50,9 @@ export const ViewPage = () => {
         <div className="text-lg max-w-xl">{inpLanguage}</div>
         <div className="text-lg max-w-xl">{outLanguage}</div>
       </div>
-      <Button className="danger" onClick={closeMicrophone}>Stop</Button>
+      <Button variant="destructive" onClick={closeMicrophone}>
+        Stop
+      </Button>
     </>
   );
 };
