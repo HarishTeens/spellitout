@@ -12,13 +12,31 @@ app.use(cors({
 import socketServer from './service/socketServer'
 import { Server } from 'socket.io'
 import http from 'http'
-const server = http.createServer(app)
-export const io = new Server(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
-});
+import https from 'https'
+import fs from 'fs'
+
+export let io;
+if (process.env.NODE_ENV === 'production') {
+    var options = {
+        key: fs.readFileSync('/etc/letsencrypt/live/spellitout.thedevelopers.agency/privkey.pem'),
+        cert: fs.readFileSync('/etc/letsencrypt/live/spellitout.thedevelopers.agency/fullchain.pem')
+    };
+    const server = https.createServer(options, app)
+    io = new Server(server, {
+        cors: {
+            origin: "*",
+            methods: ["GET", "POST"]
+        }
+    });
+} else {
+    const server = http.createServer(app)
+    io = new Server(server, {
+        cors: {
+            origin: "*",
+            methods: ["GET", "POST"]
+        }
+    });
+}
 
 io.on("connection", socketServer);
 
