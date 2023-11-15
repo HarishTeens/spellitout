@@ -1,12 +1,13 @@
 import { Deepgram } from "@deepgram/sdk";
 import { translateText } from "./gTranslate";
 import { io } from "..";
+import { LiveTranscription } from "@deepgram/sdk/dist/transcription/liveTranscription";
 const client = new Deepgram(process.env.DEEPGRAM_API_KEY);
 
 
 const setupDeepgram = (socket, src, target) => {
     let keepAlive;
-    let deepgram;
+    let deepgram: LiveTranscription;
     if (src === "es") {
         deepgram = client.transcription.live({
             language: "es",
