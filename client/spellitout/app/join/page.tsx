@@ -28,29 +28,33 @@ const JoinPage = () => {
     <main className=" h-screen bg-slate-800 text-white flex items-center justify-center flex-col gap-y-4">
       <div className="text-slate-800">Sexy Harish</div>
       <div className="flex items-center justify-evenly gap-2 flex-col">
-        <Select>
+        <Select onValueChange={(val) => {
+          setInputLang(val);
+        }}>
           <SelectTrigger className="w-[500px] text-black">
             <SelectValue placeholder="Select Input Language" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="en" onClick={() => setInputLang("en")}>
+          <SelectContent >
+            <SelectItem value="en">
               English
             </SelectItem>
-            <SelectItem value="es" onClick={() => setInputLang("es")}>
+            <SelectItem value="es">
               Spanish
             </SelectItem>
           </SelectContent>
         </Select>
 
-        <Select>
+        <Select onValueChange={(val) => {
+          setOutputLang(val);
+        }}>
           <SelectTrigger className="w-[500px] text-black">
             <SelectValue placeholder="Select Output Language" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="en" onClick={() => setOutputLang("en")}>
+            <SelectItem value="en" onChange={() => setOutputLang("en")}>
               English
             </SelectItem>
-            <SelectItem value="es" onClick={() => setOutputLang("es")}>
+            <SelectItem value="es" onChange={() => setOutputLang("es")}>
               Spanish
             </SelectItem>
           </SelectContent>
