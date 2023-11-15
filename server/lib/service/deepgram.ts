@@ -1,5 +1,6 @@
 import { Deepgram } from "@deepgram/sdk";
 import { translateText } from "./gTranslate";
+import { io } from "..";
 const client = new Deepgram(process.env.DEEPGRAM_API_KEY);
 
 
@@ -49,7 +50,7 @@ const setupDeepgram = (socket, src, target) => {
                     console.log("deepgram: transcript received");
                     const transcript = data.channel.alternatives[0].transcript ?? "";
                     console.log("socket: transcript sent to client");
-                    socket.emit("transcript", {
+                    io.emit("transcript", {
                         [src]: transcript,
                         [target]: await translateText(transcript, src, target)
                     });
