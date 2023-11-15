@@ -15,31 +15,18 @@ import http from 'http'
 import https from 'https'
 
 export let io;
-let server;
-if (process.env.NODE_ENV === 'production') {
-    server = https.createServer({
-        key: process.env.SSL_KEY,
-        cert: process.env.SSL_CERT
-    }, app)
-    io = new Server(server, {
-        cors: {
-            origin: "*",
-            methods: ["GET", "POST"]
-        }
-    });
+const server = https.createServer({
+    key: process.env.SSL_KEY,
+    cert: process.env.SSL_CERT
+}, app)
+io = new Server(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+});
 
-    io.on("connection", socketServer);
-} else {
-    server = http.createServer(app)
-    io = new Server(server, {
-        cors: {
-            origin: "*",
-            methods: ["GET", "POST"]
-        }
-    });
-
-    io.on("connection", socketServer);
-}
+io.on("connection", socketServer);
 
 import apis from './config/routes'
 import middlewares from './middlewares';
