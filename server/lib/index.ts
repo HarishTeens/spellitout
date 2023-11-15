@@ -15,8 +15,9 @@ import http from 'http'
 import https from 'https'
 
 export let io;
+let server;
 if (process.env.NODE_ENV === 'production') {
-    const server = https.createServer({
+    server = https.createServer({
         key: process.env.SSL_KEY,
         cert: process.env.SSL_CERT
     }, app)
@@ -29,7 +30,7 @@ if (process.env.NODE_ENV === 'production') {
 
     io.on("connection", socketServer);
 } else {
-    const server = http.createServer(app)
+    server = http.createServer(app)
     io = new Server(server, {
         cors: {
             origin: "*",
