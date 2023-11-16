@@ -4,7 +4,11 @@ import { io } from "..";
 import { LiveTranscription } from "@deepgram/sdk/dist/transcription/liveTranscription";
 const client = new Deepgram(process.env.DEEPGRAM_API_KEY);
 
-
+function getSpeaker(words) {
+    if (!words || words.length === 0) return 0;
+  
+    return Number(words[0]?.speaker) + 1;
+  }
 const setupDeepgram = (socket, src, target) => {
     let keepAlive;
     let deepgram: LiveTranscription;
@@ -50,10 +54,11 @@ const setupDeepgram = (socket, src, target) => {
                 case "Results":
                     console.log("deepgram: transcript received");
                     const transcript = data.channel.alternatives[0].transcript ?? "";
-                    console.log("socket: transcript sent to client");
+                    const speaker = "Speaker " + getSpeaker(data.channel.alternatives[0].words) +": ";
                     io.emit("transcript", {
                         [src]: transcript,
-                        [target]: await translateText(transcript, src, target)
+                        [target]: await translateText(transcript, src, target),
+                        speaker
                     });
                     break;
                 case "Metadata":

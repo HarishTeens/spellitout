@@ -71,9 +71,10 @@ const ViewPage = () => {
     sock.current.on("transcript", (transcript: any) => {
       // captions.innerHTML = transcript ? `<span>${transcript}</span>` : "";
       console.log(transcript);
-      const langText = transcript[outLangRef.current];
+      let langText = transcript[outLangRef.current].trim();
       if(langText.length === 0) return;
       if(displayedTextRef.current[0] === langText) return;
+      langText = transcript.speaker + langText;
       const newTexts = [langText, ...displayedTextRef.current];
       setDisplayedText(newTexts)   
       displayedTextRef.current = newTexts;
@@ -85,18 +86,17 @@ const ViewPage = () => {
   }
   return (
     <div className="h-screen bg-white">
-      ViewPage
-      {/* <Button onClick={startMeeting}>Start</Button> */}
-      <Button variant={"destructive"} onClick={stopMeeting}>
-        Stop
-      </Button>
+      
       <div className="flex items-center gap-4 flex-col">
-        <div style={{ maxHeight: "300px", width: "75%", overflow: "scroll", display: "flex" , flexDirection: "column-reverse" }}>
+        <div style={{ maxHeight: "400px", width: "75%", overflow: "scroll", display: "flex" , flexDirection: "column-reverse" }}>
           {displayedText.map((t) => {
             return <p key={t + Date.now()} style={{ fontSize: "4em" }}>{t}</p>;
           })}
         </div>
       </div>
+      <Button variant={"destructive"} onClick={stopMeeting}>
+        Stop
+      </Button>
     </div>
   );
 };
