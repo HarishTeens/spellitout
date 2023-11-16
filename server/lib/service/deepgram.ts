@@ -8,7 +8,7 @@ import cache from "memory-cache";
 function getSpeaker(socket) {
     const attendeesLangMap = cache.get("attendeesLangMap");
     const attendee = attendeesLangMap[socket.id];
-    return attendee.name;
+    return attendee.name || "Anonymous";
 }
 const setupDeepgram = (socket, src, target) => {
     let keepAlive;
