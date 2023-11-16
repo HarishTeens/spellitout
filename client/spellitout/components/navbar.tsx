@@ -17,7 +17,8 @@ export const NavBar = () => {
         </Link>
         <Link
           className="text-sm font-medium hover:underline underline-offset-4 text-gray-100 lg:text-base"
-          href="#"
+          href="https://twitter.com/HarishTeens"
+          target="_blank"
         >
           Contact
         </Link>

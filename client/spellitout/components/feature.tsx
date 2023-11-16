@@ -1,5 +1,5 @@
 import { Clock4 } from "lucide-react";
-import { Text } from "lucide-react";
+import { Presentation } from "lucide-react";
 import { Languages } from "lucide-react";
 
 export const Feature = () => {
@@ -21,12 +21,12 @@ export const Feature = () => {
               </p>
             </div>
             <div className="text-center">
-              <Text size={56} className="mx-auto" />
+              <Presentation size={56} className="mx-auto" />
               <h3 className="text-xl font-bold text-gray-200 mt-2">
-                Text Transcription
+                Multispeaker Support
               </h3>
               <p className="text-gray-400">
-                Get real-time transcription on screen.
+                Supports multiple language speakers at the same time.
               </p>
             </div>
             <div className="text-center">
