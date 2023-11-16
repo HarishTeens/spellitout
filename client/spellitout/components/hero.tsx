@@ -38,7 +38,7 @@ export const Hero = () => {
         <div className="container px-4 md:px-6 flex flex-col lg:flex-row items-center gap-8">
           <div className="lg:w-1/2">
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-500 py-2">
-              Connect instantly with our Transcription app
+              Enabling borderless conversations.
             </h1>
             <p className="max-w-[600px] text-zinc-200 md:text-xl my-6">
               Experience seamless and real-time transcription like never before.

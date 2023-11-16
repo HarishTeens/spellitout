@@ -5,9 +5,12 @@ import connectSocket from "@/lib/socket";
 import { Button } from "@/components/ui/button";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const ViewPage = () => {
   const router = useRouter();
+  const base_url = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
+  const [loading, setLoading] = useState<boolean>(true);
 
   const sock = useRef<any>(null);
   const microphoneRef = useRef<MediaRecorder | null>(null);
@@ -15,18 +18,35 @@ const ViewPage = () => {
   const [outLanguage, setOutLanguage] = useState<string>("");
 
   useEffect(() => {
-    const inpLang = localStorage.getItem("inputLang");
-    const outLang = localStorage.getItem("outputLang");
+    axios
+      .get(`${base_url}/status`)
+      .then((resp) => {
+        const { isMeetingRunning } = resp.data;
+        if (!isMeetingRunning) {
+          router.push("/");
+          return;
+        }
 
-    if (!inpLang || !outLang) {
-      router.push("/");
-      return;
-    }
+        const inpLang = localStorage.getItem("inputLang");
+        const outLang = localStorage.getItem("outputLang");
 
-    setTimeout(startMeeting, 1000);
+        if (!inpLang || !outLang) {
+          router.push("/");
+          return;
+        }
+
+        setLoading(false);
+
+        startMeeting();
+      })
+      .catch((err) => {
+        router.push("/");
+        return;
+      });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const stopMeeting = async () => {
     if (!microphoneRef.current) return;
     console.log(microphoneRef.current);
@@ -63,6 +83,9 @@ const ViewPage = () => {
       });
     });
   };
+  if (loading) {
+    return <></>;
+  }
   return (
     <div className="h-screen bg-white">
       ViewPage
