@@ -4,15 +4,28 @@ import React, { useEffect, useRef, useState } from "react";
 import connectSocket from "@/lib/socket";
 import { Button } from "@/components/ui/button";
 import api from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 const ViewPage = () => {
+  const router = useRouter();
+
   const sock = useRef<any>(null);
   const microphoneRef = useRef<MediaRecorder | null>(null);
   const [inpLanguage, setInpLanguage] = useState<string>("");
   const [outLanguage, setOutLanguage] = useState<string>("");
 
   useEffect(() => {
+    const inpLang = localStorage.getItem("inputLang");
+    const outLang = localStorage.getItem("outputLang");
+
+    if (!inpLang || !outLang) {
+      router.push("/");
+      return;
+    }
+
     setTimeout(startMeeting, 1000);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const stopMeeting = async () => {
     if (!microphoneRef.current) return;
@@ -27,7 +40,11 @@ const ViewPage = () => {
 
   const startMeeting = () => {
     sock.current = connectSocket(microphoneRef);
-    if (!sock.current) return;
+    if (!sock.current) {
+      router.push("/");
+
+      return;
+    }
     sock.current.on("transcript", (transcript: any) => {
       // captions.innerHTML = transcript ? `<span>${transcript}</span>` : "";
       console.log(transcript);
@@ -47,8 +64,8 @@ const ViewPage = () => {
     });
   };
   return (
-    <>
-      <div>ViewPage</div>
+    <div className="h-screen bg-white">
+      ViewPage
       {/* <Button onClick={startMeeting}>Start</Button> */}
       <Button variant={"destructive"} onClick={stopMeeting}>
         Stop
@@ -57,7 +74,7 @@ const ViewPage = () => {
         <div className="text-lg max-w-xl">{inpLanguage}</div>
         <div className="text-lg max-w-xl">{outLanguage}</div>
       </div>
-    </>
+    </div>
   );
 };
 export default ViewPage;

@@ -46,7 +46,7 @@ const StartPage = () => {
   };
 
   return (
-    <div className="h-screen bg-slate-800 text-white flex items-center justify-center flex-col gap-y-4 ">
+    <div className="h-screen bg-gradient-to-r from-gray-900 to-black text-white flex items-center justify-center flex-col gap-y-4 ">
       <h3 className="text-xl">Please Enter your password below</h3>
       <Input
         type="text"
@@ -60,7 +60,7 @@ const StartPage = () => {
         <Button
           type="submit"
           onClick={handleSubmit}
-          className="w-full hover:bg-slate-700"
+          className="w-full hover:bg-slate-900 bg-gray-700"
         >
           Submit
         </Button>

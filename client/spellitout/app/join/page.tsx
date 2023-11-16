@@ -25,28 +25,28 @@ const JoinPage = () => {
   };
 
   return (
-    <main className=" h-screen bg-slate-800 text-white flex items-center justify-center flex-col gap-y-4">
+    <main className=" h-screen bg-gradient-to-r from-gray-900 to-black text-white flex items-center justify-center flex-col gap-y-4">
       <div className="text-slate-800">Sexy Harish</div>
       <div className="flex items-center justify-evenly gap-2 flex-col">
-        <Select onValueChange={(val) => {
-          setInputLang(val);
-        }}>
+        <Select
+          onValueChange={(val) => {
+            setInputLang(val);
+          }}
+        >
           <SelectTrigger className="w-[500px] text-black">
             <SelectValue placeholder="Select Input Language" />
           </SelectTrigger>
-          <SelectContent >
-            <SelectItem value="en">
-              English
-            </SelectItem>
-            <SelectItem value="es">
-              Spanish
-            </SelectItem>
+          <SelectContent>
+            <SelectItem value="en">English</SelectItem>
+            <SelectItem value="es">Spanish</SelectItem>
           </SelectContent>
         </Select>
 
-        <Select onValueChange={(val) => {
-          setOutputLang(val);
-        }}>
+        <Select
+          onValueChange={(val) => {
+            setOutputLang(val);
+          }}
+        >
           <SelectTrigger className="w-[500px] text-black">
             <SelectValue placeholder="Select Output Language" />
           </SelectTrigger>
@@ -60,7 +60,10 @@ const JoinPage = () => {
           </SelectContent>
         </Select>
 
-        <Button className="w-[500px]" onClick={handleSubmit}>
+        <Button
+          className="w-[500px] hover:bg-slate-900 bg-gray-700"
+          onClick={handleSubmit}
+        >
           Submit
         </Button>
       </div>

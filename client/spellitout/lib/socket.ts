@@ -20,7 +20,7 @@ async function openMicrophone(microphone: any, socket: any) {
   microphone.onstop = () => {
     console.log("client: microphone closed");
     socket.disconnect();
-    socket.emit('end');
+    socket.emit("end");
   };
 
   microphone.ondataavailable = (e: any) => {
@@ -43,7 +43,7 @@ async function start(socket: any) {
 }
 
 function connectSocket(microphoneRef: any) {
-  const url = process.env.NEXT_PUBLIC_WS_URL || "";
+  const url = process.env.NEXT_PUBLIC_SERVER_BASE_URL || "";
   const socket = io(url, { transports: ["websocket"] });
   let microphone;
 
@@ -63,7 +63,7 @@ function connectSocket(microphoneRef: any) {
   socket.on("disconnect", () => {
     console.log("client: disconnected from websocket");
     microphoneRef.current?.stop();
-  })
+  });
 
   return socket;
 }
