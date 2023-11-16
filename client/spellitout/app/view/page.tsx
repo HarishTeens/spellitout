@@ -11,11 +11,13 @@ const ViewPage = () => {
   const router = useRouter();
   const base_url = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
   const [loading, setLoading] = useState<boolean>(true);
+  const [displayedText, setDisplayedText] = useState<string[]>([]);
 
+  const displayedTextRef = useRef<string[]>([]);
+
+  const outLang = localStorage.getItem("outputLang") ||  "en";
   const sock = useRef<any>(null);
   const microphoneRef = useRef<MediaRecorder | null>(null);
-  const [inpLanguage, setInpLanguage] = useState<string>("");
-  const [outLanguage, setOutLanguage] = useState<string>("");
 
   useEffect(() => {
     axios
@@ -47,6 +49,10 @@ const ViewPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(()=> {
+    displayedTextRef.current = displayedText;
+  },[displayedText])
+
   const stopMeeting = async () => {
     if (!microphoneRef.current) return;
     console.log(microphoneRef.current);
@@ -68,19 +74,12 @@ const ViewPage = () => {
     sock.current.on("transcript", (transcript: any) => {
       // captions.innerHTML = transcript ? `<span>${transcript}</span>` : "";
       console.log(transcript);
-      const contents = Object.values(transcript).filter(Boolean);
-
-      console.log(contents);
-
-      if (!contents.length) return;
-      setInpLanguage((lang) => {
-        if (lang.includes(contents[0] as string)) return lang;
-        return lang + " " + contents[0];
-      });
-      setOutLanguage((lang) => {
-        if (lang.includes(contents[1] as string)) return lang;
-        return lang + " " + contents[1];
-      });
+      if(transcript === '' ) return;
+      const langText = transcript[outLang];
+      const newTexts = [...displayedTextRef.current];
+      if(newTexts.at(-1) === langText) return;
+      newTexts.push(langText);
+      setDisplayedText(newTexts)      
     });
   };
   if (loading) {
@@ -94,8 +93,11 @@ const ViewPage = () => {
         Stop
       </Button>
       <div className="flex items-center gap-4 flex-col">
-        <div className="text-lg max-w-xl">{inpLanguage}</div>
-        <div className="text-lg max-w-xl">{outLanguage}</div>
+        <div style={{ maxHeight: "300px", overflow: "scroll" }}>
+          {displayedText.map((t) => {
+            return <p key={t + Date.now()} style={{ fontSize: "2em" }}>{t}</p>;
+          })}
+        </div>
       </div>
     </div>
   );

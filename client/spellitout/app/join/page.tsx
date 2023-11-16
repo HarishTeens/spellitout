@@ -26,7 +26,6 @@ const JoinPage = () => {
 
   return (
     <main className=" h-screen bg-gradient-to-r from-gray-900 to-black text-white flex items-center justify-center flex-col gap-y-4">
-      <div className="text-slate-800">Sexy Harish</div>
       <div className="flex items-center justify-evenly gap-2 flex-col">
         <Select
           onValueChange={(val) => {
