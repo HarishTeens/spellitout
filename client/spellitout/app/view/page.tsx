@@ -7,13 +7,19 @@ import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
+interface TransText {
+  key: string;
+  speaker: string;
+  text: string;
+}
+
 const ViewPage = () => {
   const router = useRouter();
   const base_url = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
   const [loading, setLoading] = useState<boolean>(true);
-  const [displayedText, setDisplayedText] = useState<string[]>([]);
+  const [displayedText, setDisplayedText] = useState<TransText[]>([]);
 
-  const displayedTextRef = useRef<string[]>([]);
+  const displayedTextRef = useRef<TransText[]>([]);
   const outLangRef = useRef<string>("");
 
   const sock = useRef<any>(null);
@@ -47,6 +53,10 @@ const ViewPage = () => {
         return;
       });
 
+      return () => {
+        stopMeeting();
+      }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -59,6 +69,8 @@ const ViewPage = () => {
     }
 
     await api.stopMeeting();
+
+    router.push("/");
   };
 
   const startMeeting = () => {
@@ -73,9 +85,13 @@ const ViewPage = () => {
       console.log(transcript);
       let langText = transcript[outLangRef.current].trim();
       if(langText.length === 0) return;
-      if(displayedTextRef.current[0] === langText) return;
-      langText = transcript.speaker + langText;
-      const newTexts = [langText, ...displayedTextRef.current];
+      const transText: TransText = {
+        key:  Date.now() + transcript.speaker,
+        speaker: transcript.speaker,
+        text: langText
+      }
+      if(displayedTextRef.current[0]?.text === langText) return;
+      const newTexts = [transText, ...displayedTextRef.current];
       setDisplayedText(newTexts)   
       displayedTextRef.current = newTexts;
       console.log("newtexts", newTexts)
@@ -90,7 +106,7 @@ const ViewPage = () => {
       <div className="flex items-center gap-4 flex-col">
         <div style={{ maxHeight: "400px", width: "75%", overflow: "scroll", display: "flex" , flexDirection: "column-reverse" }}>
           {displayedText.map((t) => {
-            return <p key={t + Date.now()} style={{ fontSize: "4em" }}>{t}</p>;
+            return <p key={t.key} style={{ fontSize: "1.8em" }}>{t.speaker} {t?.text}</p>;
           })}
         </div>
       </div>
