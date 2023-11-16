@@ -5,8 +5,7 @@ import { LiveTranscription } from "@deepgram/sdk/dist/transcription/liveTranscri
 const client = new Deepgram(process.env.DEEPGRAM_API_KEY);
 
 function getSpeaker(words) {
-    if (!words || words.length === 0) return 0;
-  
+    if (!words || words?.length === 0) return 0;  
     return Number(words[0]?.speaker) + 1;
   }
 const setupDeepgram = (socket, src, target) => {
@@ -17,11 +16,13 @@ const setupDeepgram = (socket, src, target) => {
             language: "es",
             model: "general",
             tier: "enhanced",
-            punctuate: true
+            punctuate: true,
+            diarize: true,
         });
     } else {
         deepgram = client.transcription.live({
-            punctuate: true
+            punctuate: true,
+            diarize: true,
         });
     }
 
