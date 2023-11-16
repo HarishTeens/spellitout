@@ -1,5 +1,6 @@
 import cache from "memory-cache";
 import DG from "./deepgram";
+import { io } from "..";
 
 function getClientDeepgram(socket, dgMap) {
   const socketId = socket.id;
@@ -19,6 +20,7 @@ export default function (socket) {
   let deepgramEN, deepgramES;
   if (!isMeetingRunning) {
     socket.emit("error", "Meeting is not running");
+    socket.disconnect();
     return;
   }
 
