@@ -17,11 +17,13 @@ export default function (socket) {
 
   const isMeetingRunning = cache.get("isMeetingRunning");
   let deepgramEN, deepgramES;
-  if (isMeetingRunning) {
-    deepgramEN = DG.setupDeepgram(socket, "en", "es");
-    deepgramES = DG.setupDeepgram(socket, "es", "en");
+  if (!isMeetingRunning) {
+    socket.emit("error", "Meeting is not running");
+    return;
   }
 
+  deepgramEN = DG.setupDeepgram(socket, "en", "es");
+  deepgramES = DG.setupDeepgram(socket, "es", "en");
   socket.emit("client-id", socket.id);
   socket.on("packet-sent", (data) => {
     console.log("socket: client data received");
