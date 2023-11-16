@@ -55,7 +55,8 @@ function connectSocket(microphoneRef: any) {
     console.log("client: received client id ", id);
     const inputLang = localStorage.getItem("inputLang") || "en";
     const outputLang = localStorage.getItem("outputLang") || "en";
-    await api.joinMeeting({ inp: inputLang, out: outputLang, socketId: id });
+    const name = localStorage.getItem("name") || "Anonymous";
+    await api.joinMeeting({ inp: inputLang, out: outputLang,name, socketId: id });
     microphone = await start(socket);
     microphoneRef.current = microphone;
   });
@@ -63,6 +64,7 @@ function connectSocket(microphoneRef: any) {
   socket.on("disconnect", () => {
     console.log("client: disconnected from websocket");
     microphoneRef.current?.stop();
+    window.location.href = "/";
   });
 
   return socket;
