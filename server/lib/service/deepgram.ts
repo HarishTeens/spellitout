@@ -3,12 +3,14 @@ import { translateText } from "./gTranslate";
 import { io } from "..";
 import { LiveTranscription } from "@deepgram/sdk/dist/transcription/liveTranscription";
 const client = new Deepgram(process.env.DEEPGRAM_API_KEY);
+import cache from "memory-cache";
 
-function getSpeaker(words) {
-    if (!words || words?.length === 0) return 0;  
-    return Number(words[0]?.speaker) + 1;
-  }
-const setupDeepgram = (socket, src, target, name) => {
+function getSpeaker(socket) {
+    const attendeesLangMap = cache.get("attendeesLangMap");
+    const attendee = attendeesLangMap[socket.id];
+    return attendee.name;
+}
+const setupDeepgram = (socket, src, target) => {
     let keepAlive;
     let deepgram: LiveTranscription;
     if (src === "es") {
@@ -53,7 +55,7 @@ const setupDeepgram = (socket, src, target, name) => {
                 case "Results":
                     console.log("deepgram: transcript received");
                     const transcript = data.channel.alternatives[0].transcript ?? "";
-                    const speaker = name.slice(0,12) + " : ";
+                    const speaker = getSpeaker(socket).slice(0,12) + " : ";
                     io.emit("transcript", {
                         [src]: transcript,
                         [target]: await translateText(transcript, src, target),
