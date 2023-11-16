@@ -14,8 +14,8 @@ const ViewPage = () => {
   const [displayedText, setDisplayedText] = useState<string[]>([]);
 
   const displayedTextRef = useRef<string[]>([]);
+  const outLangRef = useRef<string>("");
 
-  const outLang = localStorage.getItem("outputLang") ||  "en";
   const sock = useRef<any>(null);
   const microphoneRef = useRef<MediaRecorder | null>(null);
 
@@ -36,9 +36,10 @@ const ViewPage = () => {
           router.push("/");
           return;
         }
+        outLangRef.current = outLang;
 
         setLoading(false);
-
+        console.log('start meeting')
         startMeeting();
       })
       .catch((err) => {
@@ -48,10 +49,6 @@ const ViewPage = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(()=> {
-    displayedTextRef.current = displayedText;
-  },[displayedText])
 
   const stopMeeting = async () => {
     if (!microphoneRef.current) return;
@@ -74,12 +71,13 @@ const ViewPage = () => {
     sock.current.on("transcript", (transcript: any) => {
       // captions.innerHTML = transcript ? `<span>${transcript}</span>` : "";
       console.log(transcript);
-      if(transcript === '' ) return;
-      const langText = transcript[outLang];
-      const newTexts = [...displayedTextRef.current];
-      if(newTexts.at(-1) === langText) return;
-      newTexts.push(langText);
-      setDisplayedText(newTexts)      
+      const langText = transcript[outLangRef.current];
+      if(langText.length === 0) return;
+      if(displayedTextRef.current[0] === langText) return;
+      const newTexts = [langText, ...displayedTextRef.current];
+      setDisplayedText(newTexts)   
+      displayedTextRef.current = newTexts;
+      console.log("newtexts", newTexts)
     });
   };
   if (loading) {
@@ -93,9 +91,9 @@ const ViewPage = () => {
         Stop
       </Button>
       <div className="flex items-center gap-4 flex-col">
-        <div style={{ maxHeight: "300px", overflow: "scroll" }}>
+        <div style={{ maxHeight: "300px", width: "75%", overflow: "scroll", display: "flex" , flexDirection: "column-reverse" }}>
           {displayedText.map((t) => {
-            return <p key={t + Date.now()} style={{ fontSize: "2em" }}>{t}</p>;
+            return <p key={t + Date.now()} style={{ fontSize: "4em" }}>{t}</p>;
           })}
         </div>
       </div>
