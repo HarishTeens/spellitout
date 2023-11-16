@@ -8,7 +8,7 @@ function getSpeaker(words) {
     if (!words || words?.length === 0) return 0;  
     return Number(words[0]?.speaker) + 1;
   }
-const setupDeepgram = (socket, src, target) => {
+const setupDeepgram = (socket, src, target, name) => {
     let keepAlive;
     let deepgram: LiveTranscription;
     if (src === "es") {
@@ -16,13 +16,11 @@ const setupDeepgram = (socket, src, target) => {
             language: "es",
             model: "general",
             tier: "enhanced",
-            punctuate: true,
-            diarize: true,
+            punctuate: true
         });
     } else {
         deepgram = client.transcription.live({
             punctuate: true,
-            diarize: true,
         });
     }
 
@@ -55,7 +53,7 @@ const setupDeepgram = (socket, src, target) => {
                 case "Results":
                     console.log("deepgram: transcript received");
                     const transcript = data.channel.alternatives[0].transcript ?? "";
-                    const speaker = "Speaker " + getSpeaker(data.channel.alternatives[0].words) +": ";
+                    const speaker = name.slice(0,12) + " : ";
                     io.emit("transcript", {
                         [src]: transcript,
                         [target]: await translateText(transcript, src, target),

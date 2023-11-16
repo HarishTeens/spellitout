@@ -23,9 +23,10 @@ export default function (socket) {
     socket.disconnect();
     return;
   }
-
-  deepgramEN = DG.setupDeepgram(socket, "en", "es");
-  deepgramES = DG.setupDeepgram(socket, "es", "en");
+  const attendeesLangMap = cache.get("attendeesLangMap");
+  const attendee = attendeesLangMap[socket.id];
+  deepgramEN = DG.setupDeepgram(socket, "en", "es", attendee.name);
+  deepgramES = DG.setupDeepgram(socket, "es", "en", attendee.name);
   socket.emit("client-id", socket.id);
   socket.on("packet-sent", (data) => {
     console.log("socket: client data received");
@@ -47,7 +48,7 @@ export default function (socket) {
       /* Attempt to reopen the Deepgram connection */
       deepgram.finish();
       deepgram.removeAllListeners();
-      deepgram = DG.setupDeepgram(socket, attendee.in, attendee.out);
+      deepgram = DG.setupDeepgram(socket, attendee.in, attendee.out, attendee.name);
     } else {
       console.log("socket: data couldn't be sent to deepgram");
     }

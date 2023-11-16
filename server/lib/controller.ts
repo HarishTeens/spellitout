@@ -55,11 +55,12 @@ class Controller {
             })
             return;
         }
-        const { inputLang, outputLang, socketClientId } = req.body;
+        const { inputLang, outputLang, name, socketClientId } = req.body;
         const attendeesLangMap = cache.get('attendeesLangMap') as LangMap;
         attendeesLangMap[socketClientId] = {
             in: inputLang,
-            out: outputLang
+            out: outputLang,
+            name
         }
         cache.put('attendeesLangMap', attendeesLangMap);
 
