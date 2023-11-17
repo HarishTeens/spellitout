@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
 interface TransText {
@@ -72,13 +71,13 @@ const ViewPage = () => {
 
     await api.stopMeeting();
 
-    // router.push("/");
+    router.push("/");
   };
 
   const startMeeting = () => {
     sock.current = connectSocket(microphoneRef);
     if (!sock.current) {
-      // router.push("/");
+      router.push("/");
 
       return;
     }
@@ -127,28 +126,33 @@ const ViewPage = () => {
         Stop
       </Button> */}
       <div className="flex flex-col items-center space-y-4">
-        <h1 className="text-3xl font-bold text-white">Speak & Transcribe</h1>
-        <div className="w-[50rem] max-w-4xl bg-slate-600 rounded-lg shadow-lg p-6 space-y-4 border-6 border-red-300">
-          <Label htmlFor="transcription" className="text-white">
-            Transcription
-          </Label>
-          <div className="h-[400px] w-full overflow-scroll flex flex-col-reverse scrollbar-hide focus:outline-none">
-            {displayedText.map((t) => {
-              return (
-                <p key={t.key} className="w-[80%] text-lg text-white">
-                  {t.speaker} {t?.text}
-                </p>
-              );
-            })}
-          </div>
+        <h1 className="text-3xl font-bold text-white">Spell It Out</h1>
+        <div className="w-[50rem] max-w-4xl  rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 shadow-lg p-1 space-y-4 border-6 border-red-300">
+          <div className="bg-slate-600 p-6">
+            <Label htmlFor="transcription" className="text-white text-xl">
+              Transcription
+            </Label>
+            <div className="h-[400px] w-full overflow-scroll flex flex-col-reverse scrollbar-hide focus:outline-none">
+              {displayedText.map((t) => {
+                return (
+                  <p key={t.key} className="w-full text-xl text-white ">
+                    <span className="font-bold bg-gradient-to-r from-yellow-400 to-red-500 text-transparent bg-clip-text ">
+                      {t.speaker}
+                    </span>
+                    {t?.text}
+                  </p>
+                );
+              })}
+            </div>
 
-          <Button
-            className="w-full py-2 text-lg font-bold"
-            variant="destructive"
-            onClick={stopMeeting}
-          >
-            Stop
-          </Button>
+            <Button
+              className="w-full py-2 text-lg font-bold mt-4"
+              variant="destructive"
+              onClick={stopMeeting}
+            >
+              Stop
+            </Button>
+          </div>
         </div>
       </div>
     </div>
