@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 interface TransText {
   key: string;
@@ -45,7 +47,7 @@ const ViewPage = () => {
         outLangRef.current = outLang;
 
         setLoading(false);
-        console.log('start meeting')
+        console.log("start meeting");
         startMeeting();
       })
       .catch((err) => {
@@ -53,9 +55,9 @@ const ViewPage = () => {
         return;
       });
 
-      return () => {
-        stopMeeting();
-      }
+    // return () => {
+    //   stopMeeting();
+    // };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -70,49 +72,85 @@ const ViewPage = () => {
 
     await api.stopMeeting();
 
-    router.push("/");
+    // router.push("/");
   };
 
   const startMeeting = () => {
     sock.current = connectSocket(microphoneRef);
     if (!sock.current) {
-      router.push("/");
+      // router.push("/");
 
       return;
     }
     sock.current.on("transcript", (transcript: any) => {
       // captions.innerHTML = transcript ? `<span>${transcript}</span>` : "";
       console.log(transcript);
-      let langText = transcript[outLangRef.current].trim();
-      if(langText.length === 0) return;
+      let langText = transcript[outLangRef.current]?.trim();
+      if (!langText && langText?.length === 0) return;
       const transText: TransText = {
-        key:  Date.now() + transcript.speaker,
+        key: Date.now() + transcript.speaker,
         speaker: transcript.speaker,
-        text: langText
-      }
-      if(displayedTextRef.current[0]?.text === langText) return;
+        text: langText,
+      };
+      if (displayedTextRef.current[0]?.text === langText) return;
       const newTexts = [transText, ...displayedTextRef.current];
-      setDisplayedText(newTexts)   
+      setDisplayedText(newTexts);
       displayedTextRef.current = newTexts;
-      console.log("newtexts", newTexts)
+      console.log("newtexts", newTexts);
     });
   };
   if (loading) {
     return <></>;
   }
   return (
-    <div className="h-screen bg-white">
-      
-      <div className="flex items-center gap-4 flex-col">
-        <div style={{ maxHeight: "400px", width: "75%", overflow: "scroll", display: "flex" , flexDirection: "column-reverse" }}>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-700 to-black">
+      {/* <div className="flex items-center gap-4 flex-col">
+        <div
+          style={{
+            maxHeight: "400px",
+            width: "75%",
+            overflow: "scroll",
+            display: "flex",
+            flexDirection: "column-reverse",
+          }}
+        >
           {displayedText.map((t) => {
-            return <p key={t.key} style={{ fontSize: "1.8em" }}>{t.speaker} {t?.text}</p>;
+            return (
+              <p key={t.key} style={{ fontSize: "1.8em" }}>
+                {t.speaker} {t?.text}
+              </p>
+            );
           })}
         </div>
       </div>
       <Button variant={"destructive"} onClick={stopMeeting}>
         Stop
-      </Button>
+      </Button> */}
+      <div className="flex flex-col items-center space-y-4">
+        <h1 className="text-3xl font-bold text-white">Speak & Transcribe</h1>
+        <div className="w-[50rem] max-w-4xl bg-slate-600 rounded-lg shadow-lg p-6 space-y-4 border-6 border-red-300">
+          <Label htmlFor="transcription" className="text-white">
+            Transcription
+          </Label>
+          <div className="h-[400px] w-full overflow-scroll flex flex-col-reverse scrollbar-hide focus:outline-none">
+            {displayedText.map((t) => {
+              return (
+                <p key={t.key} className="w-[80%] text-lg text-white">
+                  {t.speaker} {t?.text}
+                </p>
+              );
+            })}
+          </div>
+
+          <Button
+            className="w-full py-2 text-lg font-bold"
+            variant="destructive"
+            onClick={stopMeeting}
+          >
+            Stop
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
