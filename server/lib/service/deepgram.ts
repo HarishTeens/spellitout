@@ -4,6 +4,7 @@ import { io } from "..";
 import { LiveTranscription } from "@deepgram/sdk/dist/transcription/liveTranscription";
 const client = new Deepgram(process.env.DEEPGRAM_API_KEY);
 import cache from "memory-cache";
+import { SUPPORTED_LANGUAGES } from "../config/constants";
 
 function getSpeaker(socket) {
     const attendeesLangMap = cache.get("attendeesLangMap");
@@ -13,19 +14,12 @@ function getSpeaker(socket) {
 const setupDeepgram = (socket, src, target) => {
     let keepAlive;
     let deepgram: LiveTranscription;
-    if (src === "es") {
-        deepgram = client.transcription.live({
-            language: "es",
-            model: "general",
-            tier: "enhanced",
-            punctuate: true
-        });
-    } else {
-        deepgram = client.transcription.live({
-            punctuate: true,
-        });
-    }
 
+    const langConfig = SUPPORTED_LANGUAGES.find((lang) => lang.id === src);
+    if (!langConfig) {
+        throw new Error("Language not supported")
+    }
+    deepgram = client.transcription.live(langConfig.dConfig);
 
     if (keepAlive) clearInterval(keepAlive);
     keepAlive = setInterval(() => {
@@ -56,11 +50,15 @@ const setupDeepgram = (socket, src, target) => {
                     console.log("deepgram: transcript received");
                     const transcript = data.channel.alternatives[0].transcript ?? "";
                     const speaker = getSpeaker(socket).slice(0,12) + " : ";
-                    io.emit("transcript", {
+                    const response = {
                         [src]: transcript,
-                        [target]: await translateText(transcript, src, target),
                         speaker
-                    });
+                    };
+                    if (src !== target) {
+                        const translatedText = await translateText(transcript, src, target);
+                        response[target] = translatedText;
+                    }
+                    io.emit("transcript", response);
                     break;
                 case "Metadata":
                     console.log("deepgram: metadata received");
