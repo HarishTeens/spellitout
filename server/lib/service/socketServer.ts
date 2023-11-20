@@ -26,7 +26,7 @@ export default async function (socket) {
   const deepgramSDKs : DeepgramSDKMap  = {};
   for (const lang of SUPPORTED_LANGUAGES) {
     deepgramSDKs[lang.id] = DG.setupDeepgram(socket, lang.id);
-    await delayMS(2000);
+    await delayMS(1000);
   }
 
   socket.emit("client-id", socket.id);

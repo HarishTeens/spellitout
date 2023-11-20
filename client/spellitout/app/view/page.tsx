@@ -19,6 +19,7 @@ const ViewPage = () => {
   const base_url = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
   const [loading, setLoading] = useState<boolean>(true);
   const [displayedText, setDisplayedText] = useState<TransText[]>([]);
+  const tryingConnectionRef = useRef<boolean>(false);
 
   const displayedTextRef = useRef<TransText[]>([]);
   const prefLangRef = useRef<string>("");
@@ -27,6 +28,8 @@ const ViewPage = () => {
   const microphoneRef = useRef<MediaRecorder | null>(null);
 
   useEffect(() => {
+    if(tryingConnectionRef.current) return;
+    tryingConnectionRef.current = true;
     axios
       .get(`${base_url}/status`)
       .then((resp) => {
