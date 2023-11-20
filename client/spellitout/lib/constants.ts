@@ -4,7 +4,15 @@ export const SUPPORTED_LANGUAGES = [
         name: "English"
     },
     {
+        id: "hi",
+        name: "Hindi (हिंदी)"
+    },
+    {
         id: "es",
         name: "Spanish (Español)"
+    },
+    {
+        id: "tr",
+        name: "Turkish (Türkçe)"
     }
 ]

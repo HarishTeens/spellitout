@@ -7,10 +7,30 @@ export const SUPPORTED_LANGUAGES = [
         }
     },
     {
+        id: "hi",
+        name: "Hindi (हिंदी)",
+        dConfig: {
+            language: "hi",
+            model: "general",
+            tier: "enhanced",
+            punctuate: true
+        }
+    },
+    {
         id: "es",
         name: "Spanish (Español)",
         dConfig: {
             language: "es",
+            model: "general",
+            tier: "enhanced",
+            punctuate: true
+        }
+    },
+    {
+        id: "tr",
+        name: "Turkish (Türkçe)",
+        dConfig: {
+            language: "tr",
             model: "general",
             tier: "enhanced",
             punctuate: true
