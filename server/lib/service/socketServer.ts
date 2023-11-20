@@ -2,6 +2,7 @@ import cache from "memory-cache";
 import DG from "./deepgram";
 import { SUPPORTED_LANGUAGES } from "../config/constants";
 import { DeepgramSDKMap } from "../config/types";
+import { delayMS } from "../utils";
 
 function getClientDeepgram(socket, dgMap) {
   const socketId = socket.id;
@@ -14,7 +15,7 @@ function getClientDeepgram(socket, dgMap) {
   return [deepgram, attendee];
 }
 
-export default function (socket) {
+export default async function (socket) {
   console.log("socket: client connected");
   const isMeetingRunning = cache.get("isMeetingRunning");
   if (!isMeetingRunning) {
@@ -25,6 +26,7 @@ export default function (socket) {
   const deepgramSDKs : DeepgramSDKMap  = {};
   for (const lang of SUPPORTED_LANGUAGES) {
     deepgramSDKs[lang.id] = DG.setupDeepgram(socket, lang.id);
+    await delayMS(1000);
   }
 
   socket.emit("client-id", socket.id);
