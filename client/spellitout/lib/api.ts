@@ -3,8 +3,7 @@ import axios from "axios";
 
 
 const joinMeeting = async (params: any) => {
-    const { inp, out,name, socketId } = params;
-    const resp = await axios.post(`${base_url}/join`, { inputLang: inp, name, outputLang: out, socketClientId: socketId });
+    const resp = await axios.post(`${base_url}/join`, params);
     return resp.data;
 }
 

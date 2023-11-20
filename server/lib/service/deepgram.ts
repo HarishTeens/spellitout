@@ -28,7 +28,7 @@ const setupDeepgram = (socket, src) => {
     }, 10 * 1000);
 
     deepgram.addListener("open", async () => {
-        console.log("deepgram: connected");
+        console.log("deepgram: connected for ", src);
 
         deepgram.addListener("close", async () => {
             console.log("deepgram: disconnected");

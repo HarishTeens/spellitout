@@ -17,7 +17,7 @@ function getClientDeepgram(socket, dgMap) {
 
 export default async function (socket) {
   console.log("socket: client connected");
-  const isMeetingRunning = cache.get("isMeetingRunning");
+  const isMeetingRunning = cache.get("isMeetingRunning"), isSDKReady = cache.get("isSDKReady");
   if (!isMeetingRunning) {
     socket.emit("error", "Meeting is not running");
     socket.disconnect();
