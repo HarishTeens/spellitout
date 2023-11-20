@@ -1,5 +1,5 @@
 import { Deepgram } from "@deepgram/sdk";
-import { translateText } from "./gTranslate";
+import { translateAll } from "./gTranslate";
 import { io } from "..";
 import { LiveTranscription } from "@deepgram/sdk/dist/transcription/liveTranscription";
 const client = new Deepgram(process.env.DEEPGRAM_API_KEY);
@@ -11,7 +11,7 @@ function getSpeaker(socket) {
     const attendee = attendeesLangMap[socket.id];
     return attendee.name || "Anonymous";
 }
-const setupDeepgram = (socket, src, target) => {
+const setupDeepgram = (socket, src) => {
     let keepAlive;
     let deepgram: LiveTranscription;
 
@@ -54,10 +54,7 @@ const setupDeepgram = (socket, src, target) => {
                         [src]: transcript,
                         speaker
                     };
-                    if (src !== target) {
-                        const translatedText = await translateText(transcript, src, target);
-                        response[target] = translatedText;
-                    }
+                    await translateAll(transcript, src, response);
                     io.emit("transcript", response);
                     break;
                 case "Metadata":

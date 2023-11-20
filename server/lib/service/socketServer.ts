@@ -1,6 +1,7 @@
 import cache from "memory-cache";
 import DG from "./deepgram";
-import { io } from "..";
+import { SUPPORTED_LANGUAGES } from "../config/constants";
+import { DeepgramSDKMap } from "../config/types";
 
 function getClientDeepgram(socket, dgMap) {
   const socketId = socket.id;
@@ -15,27 +16,23 @@ function getClientDeepgram(socket, dgMap) {
 
 export default function (socket) {
   console.log("socket: client connected");
-
   const isMeetingRunning = cache.get("isMeetingRunning");
-  let deepgramEN, deepgramES;
   if (!isMeetingRunning) {
     socket.emit("error", "Meeting is not running");
     socket.disconnect();
     return;
+  }  
+  const deepgramSDKs : DeepgramSDKMap  = {};
+  for (const lang of SUPPORTED_LANGUAGES) {
+    deepgramSDKs[lang.id] = DG.setupDeepgram(socket, lang.id);
   }
-  
-  deepgramEN = DG.setupDeepgram(socket, "en", "es");
-  deepgramES = DG.setupDeepgram(socket, "es", "en");
+
   socket.emit("client-id", socket.id);
   socket.on("packet-sent", (data) => {
     console.log("socket: client data received");
     console.log(socket.id);
 
-    let [deepgram, attendee] = getClientDeepgram(socket, {
-      en: deepgramEN,
-      es: deepgramES,
-    });
-
+    let [deepgram, attendee] = getClientDeepgram(socket, deepgramSDKs);
     if (!deepgram || !attendee) return;
 
     if (deepgram.getReadyState() === 1 /* OPEN */) {
@@ -47,15 +44,14 @@ export default function (socket) {
       /* Attempt to reopen the Deepgram connection */
       deepgram.finish();
       deepgram.removeAllListeners();
-      deepgram = DG.setupDeepgram(socket, attendee.in, attendee.out);
+      deepgram = DG.setupDeepgram(socket, attendee.in);
     } else {
       console.log("socket: data couldn't be sent to deepgram");
     }
   });
-
   socket.on("disconnect", () => {
     if (isMeetingRunning === false)
-      [deepgramEN, deepgramES].forEach((deepgram) => {
+      Object.values(deepgramSDKs).forEach((deepgram) => {
         if (!deepgram) return;
         deepgram.finish();
         deepgram.removeAllListeners();
