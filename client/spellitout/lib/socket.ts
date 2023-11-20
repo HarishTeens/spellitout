@@ -53,10 +53,9 @@ function connectSocket(microphoneRef: any) {
 
   socket.on("client-id", async (id: any) => {
     console.log("client: received client id ", id);
-    const inputLang = localStorage.getItem("inputLang") || "en";
-    const outputLang = localStorage.getItem("outputLang") || "en";
+    const prefLang = localStorage.getItem("prefLang") || "en";
     const name = localStorage.getItem("name") || "Anonymous";
-    await api.joinMeeting({ inp: inputLang, out: outputLang,name, socketId: id });
+    await api.joinMeeting({ prefLang, name, socketId: id });
     microphone = await start(socket);
     microphoneRef.current = microphone;
   });

@@ -16,13 +16,11 @@ import { SUPPORTED_LANGUAGES } from "@/lib/constants";
 const JoinPage = () => {
   const router = useRouter();
 
-  const [inputLang, setInputLang] = useState("");
-  const [outputLang, setOutputLang] = useState("");
+  const [prefLang, setPrefLang] = useState("");
   const [name, setName] = useState("")
 
   const handleSubmit = () => {
-    localStorage.setItem("inputLang", inputLang);
-    localStorage.setItem("outputLang", outputLang);
+    localStorage.setItem("prefLang", prefLang);
     localStorage.setItem("name", name[0].toUpperCase() + name.slice(1));
 
     router.push("/view");
@@ -37,24 +35,11 @@ const JoinPage = () => {
           
         <Select
           onValueChange={(val) => {
-            setInputLang(val);
+            setPrefLang(val);
           }}
         >
           <SelectTrigger className="w-[500px] text-black">
-            <SelectValue placeholder="Enter the language you will be speaking in here:" />
-          </SelectTrigger>
-          <SelectContent>
-            {SUPPORTED_LANGUAGES.map((lang) => (<SelectItem key={lang.id} value={lang.id}>{lang.name}</SelectItem>))}
-          </SelectContent>
-        </Select>
-
-        <Select
-          onValueChange={(val) => {
-            setOutputLang(val);
-          }}
-        >
-          <SelectTrigger className="w-[500px] text-black">
-            <SelectValue placeholder="Enter the language you want to be translated into here:" />
+            <SelectValue placeholder="Choose Preferred Language" />
           </SelectTrigger>
           <SelectContent>
             {SUPPORTED_LANGUAGES.map((lang) => (<SelectItem key={lang.id} value={lang.id}>{lang.name}</SelectItem>))}

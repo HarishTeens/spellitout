@@ -1,10 +1,10 @@
 import Joi from 'joi';
+import { SUPPORTED_LANGUAGES } from './constants';
 
-const supportedLanguages = Joi.string().valid('en', 'es');
+const supportedLanguages = Joi.string().valid(...SUPPORTED_LANGUAGES.map(lang => lang.id));
 const joinMeeting = Joi.object().keys({
-    inputLang: supportedLanguages.required(),
+    prefLang: supportedLanguages.required(),
     name: Joi.string().required(),
-    outputLang: supportedLanguages.required(),
     socketClientId: Joi.string().required()
 })
 

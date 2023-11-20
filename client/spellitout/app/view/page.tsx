@@ -21,7 +21,7 @@ const ViewPage = () => {
   const [displayedText, setDisplayedText] = useState<TransText[]>([]);
 
   const displayedTextRef = useRef<TransText[]>([]);
-  const outLangRef = useRef<string>("");
+  const prefLangRef = useRef<string>("");
 
   const sock = useRef<any>(null);
   const microphoneRef = useRef<MediaRecorder | null>(null);
@@ -36,14 +36,13 @@ const ViewPage = () => {
           return;
         }
 
-        const inpLang = localStorage.getItem("inputLang");
-        const outLang = localStorage.getItem("outputLang");
+        const prefLang = localStorage.getItem("prefLang");
 
-        if (!inpLang || !outLang) {
+        if (!prefLang) {
           router.push("/");
           return;
         }
-        outLangRef.current = outLang;
+        prefLangRef.current = prefLang;
 
         setLoading(false);
         console.log("start meeting");
@@ -84,7 +83,7 @@ const ViewPage = () => {
     sock.current.on("transcript", (transcript: any) => {
       // captions.innerHTML = transcript ? `<span>${transcript}</span>` : "";
       console.log(transcript);
-      let langText = transcript[outLangRef.current]?.trim();
+      let langText = transcript[prefLangRef.current]?.trim();
       if (!langText && langText?.length === 0) return;
       const transText: TransText = {
         key: Date.now() + transcript.speaker,

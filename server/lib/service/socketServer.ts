@@ -10,7 +10,7 @@ function getClientDeepgram(socket, dgMap) {
 
   if (!attendee) return [null, null];
 
-  const deepgram = dgMap[attendee.in];
+  const deepgram = dgMap[attendee.prefLang];
   return [deepgram, attendee];
 }
 
