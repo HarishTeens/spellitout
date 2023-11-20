@@ -11,6 +11,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { TextField} from "@radix-ui/themes";
+import { SUPPORTED_LANGUAGES } from "@/lib/constants";
 
 const JoinPage = () => {
   const router = useRouter();
@@ -40,11 +41,10 @@ const JoinPage = () => {
           }}
         >
           <SelectTrigger className="w-[500px] text-black">
-            <SelectValue placeholder="Select Input Language" />
+            <SelectValue placeholder="Enter the language you will be speaking in here:" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="en">English</SelectItem>
-            <SelectItem value="es">Spanish</SelectItem>
+            {SUPPORTED_LANGUAGES.map((lang) => (<SelectItem key={lang.id} value={lang.id}>{lang.name}</SelectItem>))}
           </SelectContent>
         </Select>
 
@@ -54,15 +54,10 @@ const JoinPage = () => {
           }}
         >
           <SelectTrigger className="w-[500px] text-black">
-            <SelectValue placeholder="Select Output Language" />
+            <SelectValue placeholder="Enter the language you want to be translated into here:" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="en" onChange={() => setOutputLang("en")}>
-              English
-            </SelectItem>
-            <SelectItem value="es" onChange={() => setOutputLang("es")}>
-              Spanish
-            </SelectItem>
+            {SUPPORTED_LANGUAGES.map((lang) => (<SelectItem key={lang.id} value={lang.id}>{lang.name}</SelectItem>))}
           </SelectContent>
         </Select>
 
