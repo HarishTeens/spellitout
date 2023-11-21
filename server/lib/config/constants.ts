@@ -32,7 +32,7 @@ export const SUPPORTED_LANGUAGES = [
         dConfig: {
             language: "tr",
             model: "general",
-            tier: "enhanced",
+            tier: "base",
             punctuate: true
         }
     }
