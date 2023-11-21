@@ -43,7 +43,7 @@ const ViewPage = () => {
         const prefLang = localStorage.getItem("prefLang");
 
         if (!prefLang) {
-          // router.push("/");
+          router.push("/");
           return;
         }
         prefLangRef.current = prefLang;
