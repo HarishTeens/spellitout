@@ -1,29 +1,47 @@
 "use client";
 
+import axios from "axios";
+import * as z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import axios from "axios";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { Loader } from "lucide-react";
+
+const FormSchema = z.object({
+  password: z.string().min(2, {
+    message: "Password must be at least 2 characters.",
+  }),
+});
 
 const StartPage = () => {
   const base_url = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
   const router = useRouter();
   const { toast } = useToast();
 
-  const [password, setPassword] = useState("");
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      password: "",
+    },
+  });
 
-  const handleSubmit = async () => {
+  const isLoading = form.formState.isSubmitting;
+
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
       localStorage.clear();
+      const { password } = data;
       localStorage.setItem("password", password);
       const resp = await axios.post(`${base_url}/start`, {
         password: password,
       });
-      console.log(resp);
       router.push("/join");
-      setPassword("");
+
+      form.reset();
     } catch (err: any) {
       console.log(err);
       const outp = err?.response?.data?.message;
@@ -33,15 +51,10 @@ const StartPage = () => {
       }
       toast({
         title: "Uh oh! Something went wrong.",
-
         description: outp ?? "Enter correct password",
         variant: "destructive",
       });
     }
-  };
-
-  const handleChange = (event: any) => {
-    setPassword(event.target.value);
   };
 
   return (
@@ -49,22 +62,35 @@ const StartPage = () => {
       <h1 className="text-2xl sm:text-3xl md:text-4xl bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-400 font-bold mb-8 text-center">
         Please Enter your password below
       </h1>
-      <div className="w-full max-w-lg flex flex-col items-center space-y-4 text-black">
-        <Input
-          type="text"
-          placeholder="John Doe"
-          onChange={handleChange}
-          value={password}
-          className="w-full border-4 border-red-800 "
-        />{" "}
-        <Button
-          type="submit"
-          onClick={handleSubmit}
-          className="w-full hover:bg-slate-900 bg-gray-700"
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full max-w-lg flex flex-col items-center space-y-4 text-black"
         >
-          Submit
-        </Button>
-      </div>
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormControl>
+                  <Input
+                    placeholder="John Doe"
+                    className="border-4 border-red-800"
+                    {...field}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full hover:bg-slate-900 bg-gray-700"
+          >
+            {isLoading ? <Loader className="animate-spin" /> : "Submit"}
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 };
