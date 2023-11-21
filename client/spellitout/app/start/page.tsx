@@ -23,6 +23,7 @@ const StartPage = () => {
       });
       console.log(resp);
       router.push("/join");
+      setPassword("");
     } catch (err: any) {
       console.log(err);
       const outp = err?.response?.data?.message;
@@ -36,8 +37,6 @@ const StartPage = () => {
         description: outp ?? "Enter correct password",
         variant: "destructive",
       });
-    } finally {
-      setPassword("");
     }
   };
 
@@ -46,17 +45,18 @@ const StartPage = () => {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-r from-gray-900 to-black text-white flex items-center justify-center flex-col gap-y-4 ">
-      <h3 className="text-xl">Please Enter your password below</h3>
-      <Input
-        type="text"
-        placeholder="John Doe"
-        onChange={handleChange}
-        value={password}
-        className="max-w-xl border-4 border-red-800 text-black"
-      />
-      <div className="w-[36rem]">
-        {" "}
+    <div className="min-h-screen w-full bg-gradient-to-r from-gray-900 to-black text-white flex items-center justify-center flex-col gap-y-4 mx-auto  px-4 md:px-8">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl bg-clip-text text-transparent bg-gradient-to-r from-gray-100 to-gray-400 font-bold mb-8 text-center">
+        Please Enter your password below
+      </h1>
+      <div className="w-full max-w-lg flex flex-col items-center space-y-4 text-black">
+        <Input
+          type="text"
+          placeholder="John Doe"
+          onChange={handleChange}
+          value={password}
+          className="w-full border-4 border-red-800 "
+        />{" "}
         <Button
           type="submit"
           onClick={handleSubmit}
