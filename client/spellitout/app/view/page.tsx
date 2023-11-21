@@ -109,12 +109,12 @@ const ViewPage = () => {
     return <></>;
   }
   return (
-    <div className="w-full flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-700 to-black mx-auto p-4 md:p-0">
+    <div className="w-full flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-700 to-black mx-auto ">
       <div className="flex flex-col items-center space-y-6 md:space-y-4">
         <h1 className="text-2xl md:text-3xl font-bold text-white">
           Spell It Out
         </h1>
-        <div className="w-[26rem] md:w-[50rem] max-w-4xl rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 shadow-lg p-1 space-y-4 border-6 border-red-300 ">
+        <div className="w-80 sm:w-96 md:w-[50rem] max-w-4xl rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 shadow-lg p-1 space-y-4 border-6 border-red-300 ">
           <div className="bg-slate-600 p-6">
             <Label
               htmlFor="transcription"
@@ -122,7 +122,7 @@ const ViewPage = () => {
             >
               Transcription
             </Label>
-            <div className="h-[26rem] md:h-[400px] w-full overflow-auto flex flex-col-reverse scrollbar-hide focus:outline-none mt-2">
+            <div className="h-[26rem] sm:h-[30rem] md:h-[400px] w-full overflow-auto flex flex-col-reverse scrollbar-hide focus:outline-none mt-2">
               {displayedText.map((t) => {
                 return (
                   <p
