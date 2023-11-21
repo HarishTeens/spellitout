@@ -10,11 +10,12 @@ async function getMicrophone() {
   return new MediaRecorder(userMedia);
 }
 
-async function openMicrophone(microphone: any, socket: any) {
+async function openMicrophone(microphone: any, socket: any, cb: any) {
   await microphone.start(500);
 
   microphone.onstart = () => {
     console.log("client: microphone opened");
+    cb();
   };
 
   microphone.onstop = () => {
@@ -30,19 +31,19 @@ async function openMicrophone(microphone: any, socket: any) {
   };
 }
 
-async function start(socket: any) {
+async function start(socket: any, cb: any) {
   const listenButton = document.getElementById("record") as any;
   let microphone: any;
 
   console.log("client: waiting to open microphone");
 
   microphone = await getMicrophone();
-  await openMicrophone(microphone, socket);
+  await openMicrophone(microphone, socket, cb);
 
   return microphone;
 }
 
-function connectSocket(microphoneRef: any) {
+function connectSocket(microphoneRef: any, cb: any) {
   const url = process.env.NEXT_PUBLIC_SERVER_BASE_URL || "";
   const socket = io(url, { transports: ["websocket"] });
   let microphone;
@@ -56,7 +57,7 @@ function connectSocket(microphoneRef: any) {
     const prefLang = localStorage.getItem("prefLang") || "en";
     const name = localStorage.getItem("name") || "Anonymous";
     await api.joinMeeting({ prefLang, name, socketClientId: id });
-    microphone = await start(socket);
+    microphone = await start(socket, cb);
     microphoneRef.current = microphone;
   });
 

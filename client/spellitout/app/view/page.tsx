@@ -19,6 +19,7 @@ const ViewPage = () => {
   const base_url = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
   const [loading, setLoading] = useState<boolean>(true);
   const [displayedText, setDisplayedText] = useState<TransText[]>([]);
+  const [readyStatus, setReadyStatus] = useState<"ready" | "not ready">("not ready");
   const tryingConnectionRef = useRef<boolean>(false);
 
   const displayedTextRef = useRef<TransText[]>([]);
@@ -42,7 +43,7 @@ const ViewPage = () => {
         const prefLang = localStorage.getItem("prefLang");
 
         if (!prefLang) {
-          router.push("/");
+          // router.push("/");
           return;
         }
         prefLangRef.current = prefLang;
@@ -77,7 +78,9 @@ const ViewPage = () => {
   };
 
   const startMeeting = () => {
-    sock.current = connectSocket(microphoneRef);
+    sock.current = connectSocket(microphoneRef, ()=>{
+      setReadyStatus("ready");
+    });
     if (!sock.current) {
       router.push("/");
 
@@ -105,28 +108,6 @@ const ViewPage = () => {
   }
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-700 to-black">
-      {/* <div className="flex items-center gap-4 flex-col">
-        <div
-          style={{
-            maxHeight: "400px",
-            width: "75%",
-            overflow: "scroll",
-            display: "flex",
-            flexDirection: "column-reverse",
-          }}
-        >
-          {displayedText.map((t) => {
-            return (
-              <p key={t.key} style={{ fontSize: "1.8em" }}>
-                {t.speaker} {t?.text}
-              </p>
-            );
-          })}
-        </div>
-      </div>
-      <Button variant={"destructive"} onClick={stopMeeting}>
-        Stop
-      </Button> */}
       <div className="flex flex-col items-center space-y-4">
         <h1 className="text-3xl font-bold text-white">Spell It Out</h1>
         <div className="w-[50rem] max-w-4xl  rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 shadow-lg p-1 space-y-4 border-6 border-red-300">
@@ -151,8 +132,9 @@ const ViewPage = () => {
               className="w-full py-2 text-lg font-bold mt-4"
               variant="destructive"
               onClick={stopMeeting}
+              disabled={readyStatus !== "ready"}
             >
-              Stop
+              {readyStatus === "ready" ? "End Meeting" : "Preparing..."}
             </Button>
           </div>
         </div>
