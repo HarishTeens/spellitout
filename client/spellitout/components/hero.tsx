@@ -1,36 +1,19 @@
-"use client";
-
 import React from "react";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import Image from "next/image";
-import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
-import axios from "axios";
 
-export const Hero = () => {
-  const base_url = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
-  const router = useRouter();
-  const { toast } = useToast();
+import { Button } from "@/components/ui/button";
+import { ifMeetingRunning } from "@/lib/utils";
 
-  const handleClick = async () => {
-    try {
-      const resp = await axios.get(`${base_url}/status`);
-      const { isMeetingRunning } = resp.data;
-      if (isMeetingRunning) {
-        router.push("/join");
-      } else {
-        router.push("/start");
-      }
-    } catch (err: any) {
-      console.log("Error in console");
-      console.log(err);
-      toast({
-        title: "Uh oh! Something went wrong.",
-        description: err?.message,
-        variant: "destructive",
-      });
-    }
-  };
+export const Hero = async () => {
+  let ifServerError = false;
+  let isMeetingRunning;
+
+  try {
+    isMeetingRunning = await ifMeetingRunning();
+  } catch (err: any) {
+    ifServerError = true;
+  }
 
   return (
     <main className="flex-1">
@@ -43,12 +26,21 @@ export const Hero = () => {
             <p className="max-w-[600px] text-zinc-200 md:text-xl my-6">
               Experience seamless and real-time transcription like never before.
             </p>
-            <Button
-              className="bg-gray-700 text-gray-300 py-2 px-4 rounded-md text-lg"
-              onClick={handleClick}
-            >
-              Get Started
-            </Button>
+
+            {ifServerError ? (
+              <Button
+                className="bg-gray-700 text-gray-300 py-2 px-4 rounded-md text-lg"
+                disabled
+              >
+                Backend Server Error
+              </Button>
+            ) : (
+              <Link href={isMeetingRunning ? "/join" : "/start"}>
+                <Button className="bg-gray-700 text-gray-300 py-2 px-4 rounded-md text-lg">
+                  Get Started
+                </Button>
+              </Link>
+            )}
           </div>
           <div className="w-full lg:w-1/2">
             <div className="relative h-0 pb-[45.25%] lg:pb-[56.25%] pt-8">
