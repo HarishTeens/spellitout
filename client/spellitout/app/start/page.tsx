@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader } from "lucide-react";
+import { redirect } from "next/navigation";
 
 const FormSchema = z.object({
   password: z.string().min(2, {
@@ -41,7 +42,7 @@ const StartPage = () => {
       });
       router.push("/join");
 
-      form.reset();
+      // form.reset();
     } catch (err: any) {
       console.log(err);
       const outp = err?.response?.data?.message;

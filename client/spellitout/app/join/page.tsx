@@ -47,7 +47,7 @@ const JoinPage = () => {
     localStorage.setItem("name", name[0].toUpperCase() + name.slice(1));
 
     router.push("/view");
-    form.reset();
+    // form.reset();
   };
 
   return (
@@ -63,7 +63,7 @@ const JoinPage = () => {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormControl>
-                  <Input placeholder="Jane Doe" {...field} />
+                  <Input placeholder="Name : Jane Doe" {...field} />
                 </FormControl>
               </FormItem>
             )}

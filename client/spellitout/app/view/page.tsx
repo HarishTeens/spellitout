@@ -7,6 +7,16 @@ import api from "@/lib/api";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Label } from "@/components/ui/label";
+import {
+  SelectValue,
+  SelectTrigger,
+  SelectLabel,
+  SelectItem,
+  SelectGroup,
+  SelectContent,
+  Select,
+} from "@/components/ui/select";
+import { SUPPORTED_LANGUAGES } from "@/lib/constants";
 
 interface TransText {
   key: string;
@@ -92,7 +102,8 @@ const ViewPage = () => {
       // captions.innerHTML = transcript ? `<span>${transcript}</span>` : "";
       console.log(transcript);
       let langText = transcript[prefLangRef.current]?.trim();
-      if (!langText && langText?.length === 0) return;
+      if (!langText || langText?.length === 0) return;
+
       const transText: TransText = {
         key: Date.now() + transcript.speaker,
         speaker: transcript.speaker,
@@ -116,13 +127,47 @@ const ViewPage = () => {
         </h1>
         <div className="w-80 sm:w-96 md:w-[50rem] max-w-4xl rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 shadow-lg p-1 space-y-4 border-6 border-red-300 ">
           <div className="bg-slate-600 p-6">
-            <Label
-              htmlFor="transcription"
-              className="text-white text-lg md:text-xl"
-            >
-              Transcription
-            </Label>
-            <div className="h-[26rem] sm:h-[30rem] md:h-[400px] w-full overflow-auto flex flex-col-reverse scrollbar-hide focus:outline-none mt-2">
+            <div className="flex justify-between items-center gap-2 ">
+              <Label
+                htmlFor="transcription"
+                className="text-white text-lg md:text-xl"
+              >
+                Transcription
+              </Label>
+              <Select
+                onValueChange={(val: string) => {
+                  prefLangRef.current = val;
+                  // localStorage.setItem("prefLang", val);
+                }}
+                disabled={readyStatus !== "ready"}
+              >
+                <SelectTrigger className="w-28 h-6 md:h-8 text-sm md:text-base text-black">
+                  <SelectValue
+                    placeholder={
+                      SUPPORTED_LANGUAGES.find(
+                        (l) => l.id === prefLangRef.current
+                      )?.name
+                    }
+                    defaultValue={
+                      SUPPORTED_LANGUAGES.find(
+                        (l) => l.id === prefLangRef.current
+                      )?.name
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Languages</SelectLabel>
+                    <SelectItem value="en">English</SelectItem>
+                    <SelectItem value="hi">Hindi</SelectItem>
+                    <SelectItem value="es">Spanish</SelectItem>
+                    <SelectItem value="tr">Turkish</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="h-[26rem] sm:h-[30rem] md:h-[400px] w-full overflow-auto flex flex-col-reverse scrollbar-hide focus:outline-none mt-4">
               {displayedText.map((t) => {
                 return (
                   <p
