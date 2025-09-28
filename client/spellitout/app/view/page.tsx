@@ -65,7 +65,8 @@ const ViewPage = () => {
         startMeeting();
       })
       .catch((err) => {
-        router.push("/");
+        console.error('Error getting status', err);
+        // router.push("/");
         return;
       });
 

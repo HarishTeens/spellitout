@@ -1,19 +1,27 @@
-import React from "react";
+
+"use client";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-
 import { Button } from "@/components/ui/button";
 import { ifMeetingRunning } from "@/lib/utils";
 
-export const Hero = async () => {
-  let ifServerError = false;
-  let isMeetingRunning;
+export const Hero = () => {
+  const [isMeetingRunning, setIsMeetingRunning] = useState(false);
+  const [ifServerError, setIfServerError] = useState(false);
 
-  try {
-    isMeetingRunning = await ifMeetingRunning();
-  } catch (err: any) {
-    ifServerError = true;
-  }
+  useEffect(() => {
+    const checkMeeting = async () => {
+      try {
+        const result = await ifMeetingRunning();
+        setIsMeetingRunning(result);
+      } catch (err) {
+        console.log(err);
+        setIfServerError(true);
+      }
+    };
+    checkMeeting();
+  }, []);
 
   return (
     <main className="flex-1">

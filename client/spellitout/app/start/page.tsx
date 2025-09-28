@@ -75,8 +75,9 @@ const StartPage = () => {
               <FormItem className="w-full">
                 <FormControl>
                   <Input
-                    placeholder="John Doe"
+                    placeholder="Password"
                     className="border-4 border-red-800"
+                    type="password"
                     {...field}
                   />
                 </FormControl>
