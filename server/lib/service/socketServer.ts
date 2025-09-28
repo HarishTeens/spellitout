@@ -17,13 +17,14 @@ function getClientDeepgram(socket, dgMap) {
 
 export default async function (socket) {
   console.log("socket: client connected");
-  const isMeetingRunning = cache.get("isMeetingRunning"), isSDKReady = cache.get("isSDKReady");
+  const isMeetingRunning = cache.get("isMeetingRunning"),
+    isSDKReady = cache.get("isSDKReady");
   if (!isMeetingRunning) {
     socket.emit("error", "Meeting is not running");
     socket.disconnect();
     return;
-  }  
-  const deepgramSDKs : DeepgramSDKMap  = {};
+  }
+  const deepgramSDKs: DeepgramSDKMap = {};
   for (const lang of SUPPORTED_LANGUAGES) {
     deepgramSDKs[lang.id] = DG.setupDeepgram(socket, lang.id);
     await delayMS(1000);
@@ -44,9 +45,9 @@ export default async function (socket) {
       console.log("socket: data couldn't be sent to deepgram");
       console.log("socket: retrying connection to deepgram");
       /* Attempt to reopen the Deepgram connection */
-      deepgram.finish();
-      deepgram.removeAllListeners();
-      deepgram = DG.setupDeepgram(socket, attendee.in);
+      // deepgram.finish();
+      // deepgram.removeAllListeners();
+      // deepgram = DG.setupDeepgram(socket, attendee.in);
     } else {
       console.log("socket: data couldn't be sent to deepgram");
     }
