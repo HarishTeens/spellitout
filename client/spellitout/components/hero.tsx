@@ -12,6 +12,7 @@ export const Hero = async () => {
   try {
     isMeetingRunning = await ifMeetingRunning();
   } catch (err: any) {
+    console.log(err);
     ifServerError = true;
   }
 
